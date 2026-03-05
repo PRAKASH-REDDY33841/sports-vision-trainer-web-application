@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Eyes Recover Workout</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+/* ================= GLOBAL ================= */
+
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(to bottom,#0f0f0f,#000);
+    color:white;
+    overflow:hidden;
+}
+
+.screen{
+    display:none;
+    height:100vh;
+    padding:30px;
+    box-sizing:border-box;
+}
+
+/* ================= INTRO ================= */
+
+#intro{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+.title{
+    position:absolute;
+    top:30px;
+    left:80px;
+    font-size:20px;
+    letter-spacing:2px;
+}
+
+.back-btn{
+    position:absolute;
+    top:30px;
+    left:30px;
+    cursor:pointer;
+}
+
+.benefits{
+    max-width:500px;
+    font-size:14px;
+    color:#9ca3af;
+    line-height:1.6;
+    margin-bottom:40px;
+}
+
+.eye{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    background:radial-gradient(circle,#ffb36b,#ff7a00);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:55px;
+    animation:pulse 2s infinite alternate;
+}
+
+@keyframes pulse{
+    from{transform:scale(1);}
+    to{transform:scale(1.1);}
+}
+
+/* ================= PLAYER ================= */
+
+#player{
+    position:relative;
+}
+
+.instruction{
+    position:absolute;
+    top:40px;
+    width:100%;
+    text-align:center;
+    font-size:24px;
+}
+
+.eye-move{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    background:radial-gradient(circle,#ffb36b,#ff7a00);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:45px;
+    transform:translate(-50%,-50%);
+}
+
+/* Trail */
+
+.trail{
+    position:absolute;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#ff7a00;
+    opacity:0.12;
+    pointer-events:none;
+}
+
+/* ================= COMPLETE ================= */
+
+#complete{
+    background:#0f0f0f;
+}
+
+.complete-wrapper{
+    max-width:600px;
+    margin:auto;
+}
+
+.complete-card{
+    background:#1c1c1c;
+    padding:30px;
+    border-radius:25px;
+    margin-top:20px;
+    text-align:center;
+}
+
+.day-row{
+    display:flex;
+    justify-content:space-between;
+    margin-top:30px;
+}
+
+.day-bar{
+    width:28px;
+    height:60px;
+    border-radius:20px;
+    background:#333;
+}
+
+.day-bar.active{
+    background:#6FCF97;
+}
+
+.day-label{
+    text-align:center;
+    font-size:12px;
+    color:#777;
+    margin-top:5px;
+}
+
+.main-btn{
+    margin-top:40px;
+    width:100%;
+    height:55px;
+    border:none;
+    border-radius:30px;
+    background:#8B4E1E;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+/* ================================================= */
+/* ================= TABLET VIEW =================== */
+/* ================================================= */
+
+@media(max-width:1024px){
+
+.title{
+left:60px;
+font-size:18px;
+}
+
+.benefits{
+max-width:420px;
+font-size:13px;
+}
+
+.eye{
+width:130px;
+height:130px;
+font-size:50px;
+}
+
+.instruction{
+font-size:22px;
+}
+
+.eye-move{
+width:110px;
+height:110px;
+font-size:42px;
+}
+
+.complete-wrapper{
+max-width:520px;
+}
+
+.day-bar{
+height:55px;
+}
+
+}
+
+/* ================================================= */
+/* ================= MOBILE VIEW =================== */
+/* ================================================= */
+
+@media(max-width:768px){
+
+.screen{
+padding:20px;
+}
+
+.title{
+left:60px;
+top:20px;
+font-size:16px;
+letter-spacing:1.5px;
+}
+
+.back-btn{
+top:20px;
+left:20px;
+font-size:18px;
+}
+
+.benefits{
+font-size:13px;
+max-width:320px;
+margin-bottom:30px;
+}
+
+.eye{
+width:110px;
+height:110px;
+font-size:45px;
+}
+
+.instruction{
+top:30px;
+font-size:20px;
+padding:0 10px;
+}
+
+.eye-move{
+width:95px;
+height:95px;
+font-size:38px;
+}
+
+.complete-wrapper{
+max-width:100%;
+padding:0 10px;
+}
+
+.complete-card{
+padding:25px;
+}
+
+.day-row{
+gap:10px;
+}
+
+.day-bar{
+width:22px;
+height:50px;
+}
+
+.main-btn{
+height:50px;
+font-size:16px;
+}
+
+}
+
+/* ================================================= */
+/* ============== SMALL MOBILE VIEW ================ */
+/* ================================================= */
+
+@media(max-width:480px){
+
+.title{
+font-size:14px;
+}
+
+.benefits{
+font-size:12px;
+}
+
+.eye{
+width:95px;
+height:95px;
+font-size:40px;
+}
+
+.instruction{
+font-size:18px;
+}
+
+.eye-move{
+width:85px;
+height:85px;
+font-size:34px;
+}
+
+.day-bar{
+width:18px;
+height:45px;
+}
+
+.main-btn{
+font-size:15px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="intro" class="screen">
+    <div class="back-btn" onclick="goHome()">
+        <i class="fa-solid fa-arrow-left"></i>
+    </div>
+
+    <div class="title">EYES RECOVER WORKOUT</div>
+
+    <div class="benefits">
+        These exercises reduce digital eye strain, improve focus,
+        enhance eye coordination and strengthen eye muscles.
+        <br><br>
+        Recommended duration: 2–3 minutes daily.
+    </div>
+
+    <div class="eye">👁</div>
+
+    <p style="margin-top:40px;color:#777;">Tap Anywhere To Start</p>
+</div>
+
+<div id="player" class="screen">
+    <div class="instruction" id="instruction"></div>
+    <div class="eye-move" id="eye">👁</div>
+</div>
+
+<div id="complete" class="screen">
+    <div class="complete-wrapper">
+        <h2>Exercises completed!</h2>
+        <p style="color:#888;">Perform these exercises at least once a day</p>
+
+        <div class="complete-card">
+            <p>Total time:</p>
+            <h2 id="totalTime"></h2>
+        </div>
+
+        <div class="day-row" id="days"></div>
+
+        <button class="main-btn" onclick="finishSession()">OK</button>
+    </div>
+</div>
+
+<script>
+
+const eye=document.getElementById("eye");
+const intro=document.getElementById("intro");
+const player=document.getElementById("player");
+const complete=document.getElementById("complete");
+const instruction=document.getElementById("instruction");
+
+const safeRadius=Math.min(window.innerWidth,window.innerHeight)/3;
+const STEP_DURATION=6000;
+const ROUNDS=2;
+
+intro.style.display="flex";
+intro.onclick=startExercise;
+
+async function startExercise(){
+    intro.style.display="none";
+    player.style.display="block";
+
+    let totalTime=0;
+
+    for(let round=0; round<ROUNDS; round++){
+
+        totalTime += await moveStep("Look Left", -safeRadius, 0);
+        totalTime += await moveStep("Look Right", safeRadius, 0);
+        totalTime += await moveStep("Look Up", 0, -safeRadius);
+        totalTime += await moveStep("Look Down", 0, safeRadius);
+
+        totalTime += await moveStep("Top Left", -safeRadius, -safeRadius);
+        totalTime += await moveStep("Top Right", safeRadius, -safeRadius);
+        totalTime += await moveStep("Bottom Left", -safeRadius, safeRadius);
+        totalTime += await moveStep("Bottom Right", safeRadius, safeRadius);
+
+        instruction.innerText="Circle Movement";
+        await animateCircle();
+        totalTime+=STEP_DURATION;
+
+        instruction.innerText="Infinity Movement";
+        await animateInfinity();
+        totalTime+=STEP_DURATION;
+
+        totalTime += await blinkStep();
+    }
+
+    showComplete(totalTime);
+}
+
+function moveStep(text,x,y){
+    return new Promise(resolve=>{
+        instruction.innerText=text;
+        eye.style.transition="transform 4s ease-in-out";
+        eye.style.transform=
+        `translate(calc(-50% + ${x}px),calc(-50% + ${y}px))`;
+        setTimeout(()=>resolve(STEP_DURATION),STEP_DURATION);
+    });
+}
+
+function blinkStep(){
+    return new Promise(async resolve=>{
+        instruction.innerText="Blink Slowly";
+        for(let i=0;i<6;i++){
+            eye.style.opacity=0;
+            await delay(250);
+            eye.style.opacity=1;
+            await delay(250);
+        }
+        resolve(STEP_DURATION);
+    });
+}
+
+function animateCircle(){
+    eye.style.transition="none";
+    return animatePath((t)=>{
+        const angle=2*Math.PI*t;
+        return {
+            x:safeRadius*Math.cos(angle),
+            y:safeRadius*Math.sin(angle)
+        };
+    });
+}
+
+function animateInfinity(){
+    eye.style.transition="none";
+    return animatePath((t)=>{
+        const angle=2*Math.PI*t;
+        return {
+            x:safeRadius*Math.sin(angle),
+            y:safeRadius*Math.sin(angle)*Math.cos(angle)*0.7
+        };
+    });
+}
+
+function animatePath(pathFn){
+    return new Promise(resolve=>{
+        let start=null;
+
+        function frame(timestamp){
+            if(!start) start=timestamp;
+            const progress=(timestamp-start)/STEP_DURATION;
+
+            if(progress>=1){
+                resolve();
+                return;
+            }
+
+            const pos=pathFn(progress);
+
+            eye.style.transform=
+            `translate(-50%, -50%) translate(${pos.x}px, ${pos.y}px)`;
+
+            createTrail(pos.x,pos.y);
+
+            requestAnimationFrame(frame);
+        }
+
+        requestAnimationFrame(frame);
+    });
+}
+
+function createTrail(x,y){
+    const dot=document.createElement("div");
+    dot.className="trail";
+    dot.style.left=`calc(50% + ${x}px)`;
+    dot.style.top=`calc(50% + ${y}px)`;
+    document.body.appendChild(dot);
+    setTimeout(()=>dot.remove(),500);
+}
+
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+
+function showComplete(total){
+    player.style.display="none";
+    complete.style.display="block";
+
+    const minutes=Math.floor(total/60000);
+    const seconds=Math.floor((total%60000)/1000);
+
+    document.getElementById("totalTime").innerText=
+    `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+
+    const days=["Su","Mo","Tu","We","Th","Fr","Sa"];
+    const today=new Date().getDay();
+    const container=document.getElementById("days");
+    container.innerHTML="";
+
+    days.forEach((d,i)=>{
+        container.innerHTML+=`
+        <div style="text-align:center">
+            <div class="day-bar ${i===today?'active':''}"></div>
+            <div class="day-label">${d}</div>
+        </div>`;
+    });
+}
+
+function finishSession(){window.location.href="home.html";}
+function goHome(){window.location.href="home.html";}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .app-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .app-logo {
+            width: 90px;
+            margin-bottom: 10px;
+        }
+
+        .app-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .app-subtitle {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .error-msg {
+            color: #ff4d4f;
+            font-size: 13px;
+            margin-top: 6px;
+            min-height: 18px;
+        }
+
+        .input-error input {
+            border: 1px solid #ff4d4f !important;
+        }
+
+        .auth-error {
+            text-align: center;
+            color: #ff4d4f;
+            margin-top: 12px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .container {
+            max-width: 420px;
+            width: 92%;
+            margin: 40px auto;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 94%;
+                margin: 30px auto;
+            }
+
+            .app-logo {
+                width: 80px;
+            }
+
+            .app-title {
+                font-size: 17px;
+            }
+
+            .app-subtitle {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 95%;
+                margin: 20px auto;
+            }
+
+            .app-logo {
+                width: 70px;
+            }
+
+            .app-title {
+                font-size: 16px;
+            }
+
+            .app-subtitle {
+                font-size: 11px;
+            }
+
+            .links {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="app-header">
+        <img src="https://res.cloudinary.com/dmvlmpm0v/image/upload/v1772530064/eye-logo-web_xnkl2g.png" 
+             alt="Sports Vision Logo" 
+             class="app-logo">
+
+        <div class="app-title">Sports Vision Trainer</div>
+        <div class="app-subtitle">
+            Enhance reaction speed, focus control and visual performance.
+        </div>
+    </div>
+
+    <div class="input-group" id="emailGroup">
+        <input type="email" id="email" placeholder=" " required>
+        <label>Email</label>
+        <div class="error-msg" id="emailError"></div>
+    </div>
+
+    <div class="input-group" id="passwordGroup">
+        <input type="password" id="password" placeholder=" " required>
+        <label>Password</label>
+
+        <span class="toggle-password" onclick="togglePassword()" id="eyeBtn">
+            <i class="fa-solid fa-eye"></i>
+        </span>
+
+        <div class="error-msg" id="passwordError"></div>
+    </div>
+
+    <button id="loginBtn">Login</button>
+
+    <div class="auth-error" id="authError"></div>
+
+    <div class="links">
+        <a href="register.html">Create Account</a>
+        <a href="forgot.html">Forgot Password?</a>
+    </div>
+</div>
+
+<script src="js/api.js"></script>
+
+<script>
+const BASE_URL = "http://10.158.252.111/sports_vision_trainer/";
+</script>
+
+<script>
+const emailInput = document.getElementById("email");
+const passInput = document.getElementById("password");
+const loginBtn = document.getElementById("loginBtn");
+
+const emailError = document.getElementById("emailError");
+const passError = document.getElementById("passwordError");
+const authError = document.getElementById("authError");
+
+const emailGroup = document.getElementById("emailGroup");
+const passwordGroup = document.getElementById("passwordGroup");
+
+emailInput.addEventListener("blur", () => {
+    if (emailInput.value.trim() === "") {
+        emailError.innerText = "Email is required";
+        emailGroup.classList.add("input-error");
+    }
+});
+
+passInput.addEventListener("blur", () => {
+    if (passInput.value.trim() === "") {
+        passError.innerText = "Password is required";
+        passwordGroup.classList.add("input-error");
+    }
+});
+
+emailInput.addEventListener("input", () => {
+    emailError.innerText = "";
+    emailGroup.classList.remove("input-error");
+    authError.innerText = "";
+});
+
+passInput.addEventListener("input", () => {
+    passError.innerText = "";
+    passwordGroup.classList.remove("input-error");
+    authError.innerText = "";
+});
+
+loginBtn.addEventListener("click", () => {
+
+    let valid = true;
+    authError.innerText = "";
+
+    if (emailInput.value.trim() === "") {
+        emailError.innerText = "Email is required";
+        emailGroup.classList.add("input-error");
+        valid = false;
+    }
+
+    if (passInput.value.trim() === "") {
+        passError.innerText = "Password is required";
+        passwordGroup.classList.add("input-error");
+        valid = false;
+    }
+
+    if (!valid) return;
+
+    fetch(BASE_URL + "login.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            email: emailInput.value.trim(),
+            password: passInput.value.trim()
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.status === "success") {
+
+            localStorage.setItem("userEmail", emailInput.value.trim());
+            window.location.href = "home.html";
+
+        } else {
+
+            authError.innerText = data.message || "Invalid credentials";
+
+        }
+
+    })
+    .catch(() => {
+        authError.innerText = "Server connection failed";
+    });
+
+});
+
+function togglePassword() {
+    const icon = document.querySelector("#eyeBtn i");
+
+    if (passInput.type === "password") {
+        passInput.type = "text";
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+    } else {
+        passInput.type = "password";
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+    }
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark");
+    }
+});
+</script>
+
+</body>
+</html>

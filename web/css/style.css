@@ -1,0 +1,309 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 380px;
+    padding: 40px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+    color: white;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 40px 14px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: transparent;
+    color: white;
+    outline: none;
+    font-size: 14px;
+}
+
+.input-group label {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+    pointer-events: none;
+    transition: 0.3s ease;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+    top: -8px;
+    left: 10px;
+    font-size: 11px;
+    background: #243b55;
+    padding: 0 6px;
+    border-radius: 4px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 14px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.7);
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    background: #00c6ff;
+    background: linear-gradient(45deg, #00c6ff, #0072ff);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.error-msg {
+    color: #ff6b6b;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.links {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.links a {
+    color: #00c6ff;
+    text-decoration: none;
+    font-size: 14px;
+    display: block;
+    margin-top: 8px;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+.container {
+    width: 380px;
+    padding: 40px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 25px 45px rgba(0,0,0,0.35);
+    color: white;
+}
+
+.input-group input {
+    width: 100%;
+}
+
+/* ========================= */
+/* AUTH STEP INDICATOR */
+/* ========================= */
+
+.step-indicator {
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 20px;
+    color: rgba(255,255,255,0.7);
+}
+
+/* ========================= */
+/* DESCRIPTION TEXT */
+/* ========================= */
+
+.auth-desc {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 25px;
+    color: rgba(255,255,255,0.8);
+}
+
+/* ========================= */
+/* FADE IN ANIMATION */
+/* ========================= */
+
+.container {
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================= */
+/* SUCCESS MESSAGE */
+/* ========================= */
+
+.success-box {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(0, 255, 150, 0.15);
+    border: 1px solid #00ffae;
+    font-size: 13px;
+    text-align: center;
+    animation: popIn 0.4s ease;
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ========================= */
+/* PROGRESS BAR */
+/* ========================= */
+
+.progress-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    margin-bottom: 25px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 66%;
+    background: linear-gradient(45deg, #00c6ff, #0072ff);
+    animation: progressAnim 1s ease;
+}
+
+@keyframes progressAnim {
+    from { width: 0; }
+    to { width: 66%; }
+}
+
+/* ========================= */
+/* OTP BOXES */
+/* ========================= */
+
+.otp-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.otp-input {
+    width: 45px;
+    height: 50px;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: transparent;
+    color: white;
+    outline: none;
+}
+
+.otp-input:focus {
+    border-color: #00c6ff;
+}
+
+/* ========================= */
+/* TIMER */
+/* ========================= */
+
+.timer {
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 15px;
+    color: rgba(255,255,255,0.7);
+}
+
+.resend-btn {
+    text-align: center;
+    font-size: 13px;
+    cursor: pointer;
+    color: #00c6ff;
+    margin-bottom: 15px;
+}
+
+.resend-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ================= GLOBAL DARK THEME ================= */
+
+body.dark {
+    background: #0f172a !important;
+    color: #f1f5f9 !important;
+}
+
+/* Containers */
+body.dark .container,
+body.dark .settings-wrapper,
+body.dark .profile-card,
+body.dark .session-card,
+body.dark .feature-card {
+    background: #1e293b !important;
+    color: #f1f5f9 !important;
+}
+
+/* Inputs */
+body.dark input,
+body.dark textarea {
+    background: #334155 !important;
+    color: #f1f5f9 !important;
+    border-color: #475569 !important;
+}
+
+/* Sidebar */
+body.dark .sidebar {
+    background: #111827 !important;
+}
+
+/* Cards */
+body.dark .feature-card {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* Buttons */
+body.dark button {
+    opacity: 0.95;
+}

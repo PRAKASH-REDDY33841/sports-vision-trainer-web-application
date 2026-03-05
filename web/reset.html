@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Reset Password</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+/* -------- Tablet -------- */
+
+@media (max-width:1024px){
+
+body{
+padding:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+margin:auto;
+}
+
+}
+
+/* -------- Mobile -------- */
+
+@media (max-width:768px){
+
+body{
+padding:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.input-group input{
+width:100%;
+}
+
+}
+
+/* -------- Small Mobile -------- */
+
+@media (max-width:480px){
+
+body{
+padding:15px;
+display:flex;
+justify-content:center;
+align-items:flex-start;
+min-height:100vh;
+}
+
+.container{
+margin-top:40px;
+}
+
+button{
+width:100%;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<div class="step-indicator">
+Step 3 of 3 — Set New Password
+</div>
+
+<h2>Set New Password</h2>
+
+<div class="auth-desc">
+Create a strong new password for your account.
+</div>
+
+<!-- New Password -->
+
+<div class="input-group">
+<input type="password" id="newPassword" placeholder=" " required>
+<label>New Password</label>
+</div>
+
+<!-- Confirm Password -->
+
+<div class="input-group">
+<input type="password" id="confirmPassword" placeholder=" " required>
+<label>Re-enter Password</label>
+
+<span class="toggle-password" id="matchIcon" style="display:none; right:12px;">
+<i class="fa-solid fa-check" style="color:#00ffae;"></i>
+</span>
+
+<div class="error-msg" id="cError"></div>
+</div>
+
+<button id="resetBtn" disabled>
+Reset Password
+</button>
+
+<div id="successMessage"></div>
+
+</div>
+
+<script src="js/api.js"></script>
+
+<script>
+
+const pass = document.getElementById("newPassword");
+const confirm = document.getElementById("confirmPassword");
+const btn = document.getElementById("resetBtn");
+const matchIcon = document.getElementById("matchIcon");
+const errorBox = document.getElementById("cError");
+const successBox = document.getElementById("successMessage");
+
+// Check email exists
+
+const email = localStorage.getItem("resetEmail");
+
+if (!email) {
+window.location.href = "login.html";
+}
+
+function validatePasswords(){
+
+const p = pass.value.trim();
+const c = confirm.value.trim();
+
+errorBox.innerText = "";
+
+if(p !== "" && p === c){
+
+matchIcon.style.display = "block";
+btn.disabled = false;
+
+}else{
+
+matchIcon.style.display = "none";
+btn.disabled = true;
+
+if(c !== "" && p !== c){
+errorBox.innerText = "Passwords do not match";
+}
+
+}
+
+}
+
+pass.addEventListener("input", validatePasswords);
+confirm.addEventListener("input", validatePasswords);
+
+
+// RESET PASSWORD
+
+btn.addEventListener("click", () => {
+
+fetch(BASE_URL + "reset_password_final.php", {
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+email:email,
+password:pass.value.trim()
+})
+
+})
+.then(res => res.json())
+.then(data => {
+
+if(data.status === "success"){
+
+successBox.innerHTML =
+`<div class="success-box">
+<i class="fa-solid fa-circle-check"></i>
+Password Updated Successfully. Redirecting...
+</div>`;
+
+localStorage.removeItem("resetEmail");
+
+setTimeout(()=>{
+window.location.href = "login.html";
+},1500);
+
+}else{
+
+errorBox.innerText = data.msg || "Update failed";
+
+}
+
+})
+.catch(()=>{
+errorBox.innerText = "Server error";
+});
+
+});
+
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+if (localStorage.getItem("darkMode") === "true") {
+document.body.classList.add("dark");
+}
+});
+</script>
+
+</body>
+</html>

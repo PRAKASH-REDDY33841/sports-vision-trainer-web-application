@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App Settings</title>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+/* ================= GLOBAL ================= */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f6f9;
+    transition: background .4s ease, color .4s ease;
+}
+
+.settings-wrapper {
+    max-width: 720px;
+    margin: 60px auto;
+    background: white;
+    border-radius: 18px;
+    padding: 40px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+    transition: background .4s ease;
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark {
+    background: #0f172a;
+    color: #f1f5f9;
+}
+
+body.dark .settings-wrapper {
+    background: #1e293b;
+}
+
+body.dark .divider {
+    background: #334155;
+}
+
+body.dark .section-title {
+    color: #cbd5e1;
+}
+
+/* ================= HEADER ================= */
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.back-btn {
+    cursor: pointer;
+    font-size: 18px;
+    transition: .3s;
+}
+
+.back-btn:hover {
+    transform: translateX(-4px);
+    color: #6366f1;
+}
+
+.section-title {
+    margin-top: 30px;
+    font-weight: 600;
+}
+
+.divider {
+    height: 1px;
+    background: #e5e7eb;
+    margin: 15px 0;
+}
+
+/* ================= SWITCH ================= */
+
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+}
+
+.switch {
+    position: relative;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input { display: none; }
+
+.slider {
+    position: absolute;
+    background: #d1d5db;
+    border-radius: 30px;
+    top: 0; bottom: 0; left: 0; right: 0;
+    transition: .3s;
+}
+
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: .3s;
+}
+
+input:checked + .slider {
+    background: #6366f1;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+/* ================= LIST ================= */
+
+.list-item {
+    padding: 14px 0;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.list-item:hover {
+    color: #6366f1;
+    transform: translateX(5px);
+}
+
+/* ================= BUTTON ================= */
+
+.logout-btn {
+    margin-top: 30px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: #ef4444;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.logout-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* ================= MODAL ================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: .3s;
+}
+
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    width: 400px;
+    transform: translateY(20px);
+    transition: .3s;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+}
+
+body.dark .modal-content {
+    background: #1e293b;
+}
+
+/* ================= TOAST ================= */
+
+.toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: #6366f1;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: .4s;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width:768px){
+
+.settings-wrapper{
+    margin:30px 20px;
+    padding:30px;
+}
+
+.modal-content{
+    width:90%;
+}
+
+}
+
+@media (max-width:480px){
+
+.settings-wrapper{
+    margin:20px 15px;
+    padding:25px;
+}
+
+.header h2{
+    font-size:20px;
+}
+
+.setting-row{
+    font-size:14px;
+}
+
+.logout-btn{
+    padding:11px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="settings-wrapper">
+
+<div class="header">
+    <div class="back-btn"
+         onclick="window.location.href='home.html'">
+        <i class="fa-solid fa-arrow-left"></i>
+    </div>
+    <h2>App Settings</h2>
+</div>
+
+<div class="section-title">General</div>
+<div class="divider"></div>
+
+<div class="setting-row">
+    <span>Dark Mode</span>
+    <label class="switch">
+        <input type="checkbox" id="darkToggle">
+        <span class="slider"></span>
+    </label>
+</div>
+
+<div class="setting-row">
+    <span>Audio Cues</span>
+    <label class="switch">
+        <input type="checkbox" id="audioToggle">
+        <span class="slider"></span>
+    </label>
+</div>
+
+<div class="setting-row">
+    <span>Haptic Feedback</span>
+    <label class="switch">
+        <input type="checkbox" id="hapticToggle">
+        <span class="slider"></span>
+    </label>
+</div>
+
+<div class="section-title">Account</div>
+<div class="divider"></div>
+
+<div class="list-item"
+     onclick="window.location.href='profile.html'">
+    <i class="fa-solid fa-user"></i> Account Profile
+</div>
+
+<div class="section-title">Support</div>
+<div class="divider"></div>
+
+<div class="list-item" onclick="openHelp()">
+    📘 Help & Training Guide
+</div>
+
+<div class="list-item" onclick="contactSupport()">
+    📧 Contact Support
+</div>
+
+<button class="logout-btn" onclick="logout()">
+    Logout
+</button>
+
+</div>
+
+<!-- HELP MODAL -->
+<div class="modal" id="helpModal">
+  <div class="modal-content">
+      <h3>Sports Vision Trainer Help</h3>
+      <p>🎯 Reaction tests measure response time.</p>
+      <p>👁 Improve visual processing speed.</p>
+      <p>⚡ Faster taps = better score.</p>
+      <br>
+      <button onclick="closeHelp()">Close</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+
+/* ===== APPLY DARK MODE AFTER BODY LOAD ===== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const darkToggle = document.getElementById("darkToggle");
+
+    /* DEFAULT DARK MODE OFF */
+
+    if (localStorage.getItem("darkMode") === null) {
+        localStorage.setItem("darkMode", "false");
+    }
+
+    applyTheme();
+
+    darkToggle.checked = localStorage.getItem("darkMode") === "true";
+
+    darkToggle.addEventListener("change", () => {
+        localStorage.setItem("darkMode", darkToggle.checked);
+        applyTheme();
+        showToast("Theme Updated");
+    });
+
+});
+
+function applyTheme() {
+    if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark");
+    } else {
+        document.body.classList.remove("dark");
+    }
+}
+
+/* ===== HELP MODAL ===== */
+
+function openHelp() {
+    document.getElementById("helpModal").classList.add("active");
+}
+
+function closeHelp() {
+    document.getElementById("helpModal").classList.remove("active");
+}
+
+/* ===== EMAIL ===== */
+
+function contactSupport() {
+    const email = "sportsvisiontrainer@gmail.com";
+    const subject = encodeURIComponent("Sports Vision Trainer Support");
+    const body = encodeURIComponent("Describe your issue here...");
+
+    const gmailComposeURL =
+        `https://mail.google.com/mail/u/0/?view=cm&fs=1&tf=1&to=${email}&su=${subject}&body=${body}`;
+
+    window.open(gmailComposeURL, "_blank");
+}
+
+/* ===== TOAST ===== */
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.innerText = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
+}
+
+/* ===== LOGOUT ===== */
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
+</script>
+
+</body>
+</html>

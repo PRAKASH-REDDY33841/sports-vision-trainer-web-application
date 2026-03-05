@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sound + Visual</title>
+
+<style>
+
+body{
+    margin:0;
+    background:black;
+    font-family:'Segoe UI',sans-serif;
+    color:white;
+    overflow:hidden;
+}
+
+/* ---------- TOP BAR ---------- */
+
+.topbar{
+    position:absolute;
+    top:0;
+    width:100%;
+    padding:18px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-sizing:border-box;
+    position:relative;
+}
+
+#speedLabel{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.settings{
+    cursor:pointer;
+    font-size:20px;
+}
+
+/* ---------- RULE ---------- */
+
+.rule{
+    text-align:center;
+    margin-top:60px;
+    color:yellow;
+}
+
+/* ---------- STIMULUS ---------- */
+
+.stimulus{
+    position:absolute;
+    width:200px;
+    height:200px;
+    border-radius:50%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    cursor:pointer;
+}
+
+/* ---------- FOOTER ---------- */
+
+.footer{
+    position:absolute;
+    bottom:20px;
+    width:100%;
+    text-align:center;
+}
+
+/* ---------- SETTINGS MODAL ---------- */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:2000;
+}
+
+.modal.active{
+    display:flex;
+}
+
+/* Width adjusted so chips stay in one row */
+
+.modal-box{
+    background:#d7ccc8;
+    color:black;
+    width:340px;
+    padding:30px;
+    border-radius:25px;
+}
+
+.chip{
+    padding:8px 16px;
+    border-radius:12px;
+    border:2px solid #888;
+    cursor:pointer;
+    margin-right:8px;
+    margin-top:8px;
+    display:inline-block;
+}
+
+.chip.active{
+    background:#f4c7a1;
+    border-color:#f4c7a1;
+}
+
+/* Exit button fixed width */
+
+.exit-btn{
+    margin-top:20px;
+    width:200px;
+    padding:14px;
+    border:none;
+    border-radius:30px;
+    background:red;
+    color:white;
+    cursor:pointer;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+/* ---------- RESULT ---------- */
+
+.report-overlay{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#1e293b,#0f172a);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:5000;
+}
+
+.report-card{
+    background:#f1f5f9;
+    color:#0f172a;
+    width:400px;
+    padding:40px;
+    border-radius:30px;
+}
+
+.report-row{
+    display:flex;
+    justify-content:space-between;
+    margin:10px 0;
+}
+
+.primary-btn{
+    width:100%;
+    padding:15px;
+    margin-top:20px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(to right,#6366f1,#4f46e5);
+    color:white;
+    cursor:pointer;
+}
+
+.outline-btn{
+    width:100%;
+    padding:15px;
+    margin-top:12px;
+    border-radius:12px;
+    background:transparent;
+    border:2px solid #4f46e5;
+    color:#4f46e5;
+    cursor:pointer;
+}
+
+
+/* =====================================================
+   RESPONSIVE (ONLY MOBILE & TABLET)
+   ===================================================== */
+
+@media (max-width:900px){
+
+.modal-box{
+width:300px;
+}
+
+.report-card{
+width:85%;
+padding:35px;
+}
+
+}
+
+@media (max-width:600px){
+
+.topbar{
+padding:14px 16px;
+}
+
+.rule{
+margin-top:70px;
+font-size:14px;
+}
+
+.stimulus{
+width:140px;
+height:140px;
+}
+
+.modal-box{
+width:280px;
+padding:25px;
+}
+
+.report-card{
+width:90%;
+padding:30px;
+}
+
+}
+
+@media (max-width:400px){
+
+.rule{
+font-size:13px;
+}
+
+.stimulus{
+width:120px;
+height:120px;
+}
+
+.modal-box{
+width:250px;
+padding:22px;
+}
+
+.report-card{
+padding:25px;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <span id="timeText">30</span>
+    <span id="speedLabel">MEDIUM</span>
+    <span class="settings" onclick="openSettings()">⚙</span>
+</div>
+
+<div class="rule">RULE: Tap ONLY RED</div>
+
+<div id="stimulus" class="stimulus" style="display:none;"></div>
+
+<div class="footer">
+    <div>Score <span id="score">0</span></div>
+    <div>Wrong <span id="wrong">0</span></div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settingsModal" class="modal">
+<div class="modal-box">
+<h2>Drill Settings</h2>
+
+<p>Motion Speed</p>
+<div id="speedGroup">
+<span class="chip" onclick="setSpeed('SLOW',1300,this)">SLOW</span>
+<span class="chip active" onclick="setSpeed('MEDIUM',900,this)">MEDIUM</span>
+<span class="chip" onclick="setSpeed('FAST',550,this)">FAST</span>
+</div>
+
+<p style="margin-top:15px;">Duration</p>
+<div id="timeGroup">
+<span class="chip" onclick="setTime(20,this)">20s</span>
+<span class="chip active" onclick="setTime(30,this)">30s</span>
+<span class="chip" onclick="setTime(60,this)">60s</span>
+</div>
+
+<button class="exit-btn" onclick="exitDrill()">Exit Drill</button>
+</div>
+</div>
+
+<script>
+
+/* ---------- STATE ---------- */
+
+let sessionSeconds = 30
+let timeLeft = 30
+let spawnDelay = 900
+let paused = false
+let gameOver = false
+
+let score = 0
+let wrong = 0
+let reactionTotal = 0
+let appearTime = 0
+
+let timerInterval
+let spawnInterval
+
+const stimulus = document.getElementById("stimulus")
+
+/* ---------- TIMER ---------- */
+
+function startTimer(){
+timerInterval=setInterval(()=>{
+if(!paused && !gameOver){
+timeLeft--
+document.getElementById("timeText").innerText=timeLeft
+if(timeLeft<=0){
+clearInterval(timerInterval)
+endGame()
+}
+}
+},1000)
+}
+
+/* ---------- SPAWN ENGINE ---------- */
+
+function startSpawning(){
+spawnInterval=setInterval(()=>{
+if(paused || gameOver) return
+
+const colors=["red","green","blue"]
+const color=colors[Math.floor(Math.random()*3)]
+
+stimulus.style.background=color
+stimulus.style.display="block"
+appearTime=Date.now()
+
+setTimeout(()=>{
+if(stimulus.style.display==="block" && color==="red"){
+wrong++
+updateUI()
+}
+stimulus.style.display="none"
+},800)
+
+},spawnDelay)
+}
+
+/* ---------- CLICK ---------- */
+
+stimulus.onclick=function(){
+if(paused || gameOver) return
+
+const color=stimulus.style.background
+const rt=Date.now()-appearTime
+
+if(color==="red"){
+score++
+reactionTotal+=rt
+}else{
+wrong++
+}
+
+stimulus.style.display="none"
+updateUI()
+}
+
+/* ---------- UI ---------- */
+
+function updateUI(){
+document.getElementById("score").innerText=score
+document.getElementById("wrong").innerText=wrong
+}
+
+/* ---------- SETTINGS ---------- */
+
+function openSettings(){
+paused=true
+document.getElementById("settingsModal").classList.add("active")
+}
+
+document.getElementById("settingsModal").onclick=function(e){
+if(e.target===this){
+paused=false
+this.classList.remove("active")
+}
+}
+
+function setSpeed(label,delay,el){
+spawnDelay=delay
+document.getElementById("speedLabel").innerText=label
+document.querySelectorAll("#speedGroup .chip").forEach(c=>c.classList.remove("active"))
+el.classList.add("active")
+
+clearInterval(spawnInterval)
+startSpawning()
+}
+
+function setTime(t,el){
+sessionSeconds=t
+timeLeft=t
+document.getElementById("timeText").innerText=t
+document.querySelectorAll("#timeGroup .chip").forEach(c=>c.classList.remove("active"))
+el.classList.add("active")
+}
+
+function exitDrill(){
+window.location.href="sports.html"
+}
+
+/* ---------- RESULT ---------- */
+
+function endGame(){
+gameOver=true
+clearInterval(spawnInterval)
+
+let avg=score===0?0:Math.floor(reactionTotal/score)
+let finalScore=score*160 - wrong*40 - Math.floor(avg/6)
+
+const overlay=document.createElement("div")
+overlay.className="report-overlay"
+overlay.innerHTML=`
+<div class="report-card">
+<h2>Performance Report 🔊</h2>
+<div class="report-row"><span>Score</span><span>${score}</span></div>
+<div class="report-row"><span>Wrong</span><span>${wrong}</span></div>
+<div class="report-row"><span>Avg Reaction</span><span>${avg} ms</span></div>
+<div class="report-row"><span>Final Score</span><span>${finalScore}</span></div>
+<button class="primary-btn" onclick="location.reload()">Start Again</button>
+<button class="outline-btn" onclick="goHome()">Back To Home</button>
+</div>
+`
+document.body.appendChild(overlay)
+}
+
+function goHome(){
+window.location.href="sports.html"
+}
+
+/* ---------- START ---------- */
+
+startTimer()
+startSpawning()
+
+</script>
+
+</body>
+</html>

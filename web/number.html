@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Number Reaction</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    background:black;
+    font-family:'Segoe UI',sans-serif;
+    color:white;
+    overflow:hidden;
+}
+
+/* ---------- TOP BAR ---------- */
+
+.topbar{
+    position:absolute;
+    top:0;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    padding:20px 30px;
+    box-sizing:border-box;
+    font-size:18px;
+    align-items:center;
+}
+
+.settings-icon{
+    cursor:pointer;
+    font-size:22px;
+}
+
+/* ---------- GRID ---------- */
+
+.game-container{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:260px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.cell{
+    aspect-ratio:1/1;
+    background:white;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:22px;
+    color:black;
+    cursor:pointer;
+}
+
+.cell.target{
+    background:green;
+    color:white;
+}
+
+/* ---------- FOOTER ---------- */
+
+.footer{
+    position:absolute;
+    bottom:20px;
+    width:100%;
+    text-align:center;
+}
+
+/* ---------- SETTINGS ---------- */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.modal-content{
+    background:#ede2d9;
+    padding:35px;
+    border-radius:28px;
+    width:400px;
+    color:black;
+}
+
+.chip{
+    padding:8px 18px;
+    border-radius:12px;
+    border:2px solid #888;
+    cursor:pointer;
+    margin-right:10px;
+}
+
+.chip.active{
+    background:#f4c7a1;
+    border-color:#f4c7a1;
+}
+
+.exit-btn{
+    margin-top:25px;
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:50px;
+    background:red;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+/* ========================= */
+/* TABLET RESPONSIVE */
+/* ========================= */
+
+@media (max-width:1024px){
+
+.topbar{
+padding:18px 24px;
+font-size:16px;
+}
+
+.settings-icon{
+font-size:20px;
+}
+
+.game-container{
+width:240px;
+gap:10px;
+}
+
+.cell{
+font-size:20px;
+}
+
+.modal-content{
+width:340px;
+padding:28px;
+}
+
+}
+
+/* ========================= */
+/* MOBILE RESPONSIVE */
+/* ========================= */
+
+@media (max-width:768px){
+
+.topbar{
+padding:14px 18px;
+font-size:15px;
+}
+
+.settings-icon{
+font-size:18px;
+}
+
+.game-container{
+width:220px;
+gap:8px;
+}
+
+.cell{
+font-size:18px;
+border-radius:10px;
+}
+
+.footer{
+font-size:14px;
+}
+
+.modal-content{
+width:85%;
+padding:24px;
+}
+
+.chip{
+padding:7px 14px;
+font-size:14px;
+}
+
+.exit-btn{
+font-size:15px;
+padding:13px;
+}
+
+}
+
+/* ========================= */
+/* SMALL MOBILE */
+/* ========================= */
+
+@media (max-width:480px){
+
+.topbar{
+padding:12px 14px;
+font-size:14px;
+}
+
+.settings-icon{
+font-size:16px;
+}
+
+.game-container{
+width:200px;
+gap:7px;
+}
+
+.cell{
+font-size:16px;
+border-radius:8px;
+}
+
+.footer{
+font-size:13px;
+}
+
+.modal-content{
+padding:20px;
+}
+
+.chip{
+font-size:13px;
+padding:6px 12px;
+}
+
+.exit-btn{
+font-size:14px;
+padding:12px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <div id="timeText">30</div>
+    <div id="speedLabel">MEDIUM</div>
+    <div class="settings-icon" onclick="openSettings()">⚙</div>
+</div>
+
+<div id="grid" class="game-container"></div>
+
+<div class="footer">
+Score <span id="scoreText">0</span> |
+Wrong <span id="wrongText">0</span>
+</div>
+
+<!-- SETTINGS -->
+<div id="settingsModal" class="modal">
+<div class="modal-content">
+
+<h2>Drill Settings</h2>
+
+<p><b>Motion Speed</b></p>
+<div>
+<span class="chip" onclick="setSpeed('SLOW',this)">SLOW</span>
+<span class="chip active" onclick="setSpeed('MEDIUM',this)">MEDIUM</span>
+<span class="chip" onclick="setSpeed('FAST',this)">FAST</span>
+</div>
+
+<p style="margin-top:20px;"><b>Session Time</b></p>
+<div>
+<span class="chip" onclick="setTime(20,this)">20s</span>
+<span class="chip active" onclick="setTime(30,this)">30s</span>
+<span class="chip" onclick="setTime(60,this)">60s</span>
+</div>
+
+<button class="exit-btn" onclick="exitDrill()">Exit Drill</button>
+
+</div>
+</div>
+
+<script>
+
+/* ---------- STATE ---------- */
+
+let timeLeft = 30;
+let sessionSeconds = 30;
+let motionLabel = "MEDIUM";
+
+let numbers = [];
+let currentTarget = 1;
+
+let score = 0;
+let wrong = 0;
+let reactionTotal = 0;
+let lastSpawnTime = 0;
+
+let paused = false;
+
+/* ---------- ELEMENTS ---------- */
+
+const grid = document.getElementById("grid");
+const timeText = document.getElementById("timeText");
+const scoreText = document.getElementById("scoreText");
+const wrongText = document.getElementById("wrongText");
+const speedLabel = document.getElementById("speedLabel");
+const modal = document.getElementById("settingsModal");
+
+/* ---------- TIMER ---------- */
+
+let timer = setInterval(()=>{
+    if(!paused){
+        timeLeft--;
+        timeText.innerText = timeLeft;
+    }
+
+    if(timeLeft <= 0){
+        clearInterval(timer);
+        endGame();
+    }
+},1000);
+
+/* ---------- GENERATE GRID ---------- */
+
+function generateGrid(){
+    numbers = Array.from({length:9},(_,i)=>i+1)
+                .sort(()=>Math.random()-0.5);
+
+    currentTarget = 1;
+    lastSpawnTime = Date.now();
+    renderGrid();
+}
+
+function renderGrid(){
+    grid.innerHTML = "";
+
+    numbers.forEach(num=>{
+        const cell = document.createElement("div");
+        cell.className = "cell";
+
+        if(num === currentTarget){
+            cell.classList.add("target");
+        }
+
+        cell.innerText = num;
+
+        cell.onclick = ()=>{
+            if(paused) return;
+
+            if(num === currentTarget){
+
+                const rt = Date.now() - lastSpawnTime;
+                reactionTotal += rt;
+                score++;
+                scoreText.innerText = score;
+
+                currentTarget++;
+
+                if(currentTarget > numbers.length){
+                    generateGrid();
+                } else {
+                    renderGrid();
+                }
+
+            } else {
+                wrong++;
+                wrongText.innerText = wrong;
+            }
+        };
+
+        grid.appendChild(cell);
+    });
+}
+
+generateGrid();
+
+/* ---------- SETTINGS ---------- */
+
+function openSettings(){
+    paused = true;
+    modal.classList.add("active");
+}
+
+modal.onclick = function(e){
+    if(e.target === modal){
+        paused = false;
+        modal.classList.remove("active");
+    }
+};
+
+function setSpeed(value,el){
+    motionLabel = value;
+    speedLabel.innerText = value;
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    el.classList.add("active");
+}
+
+function setTime(sec,el){
+    sessionSeconds = sec;
+    timeLeft = sec;
+    timeText.innerText = sec;
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    el.classList.add("active");
+}
+
+function exitDrill(){
+    window.location.href = "sports.html";
+}
+
+/* ---------- END GAME ---------- */
+
+function endGame(){
+
+    const avg = score===0 ? 0 : Math.floor(reactionTotal/score);
+    const finalScore = score*120 - wrong*40 - Math.floor(avg/5);
+
+    const params = new URLSearchParams(window.location.search);
+    const origin = params.get("origin") || "sports";
+
+    window.location.href =
+        "reaction_result.html?hits="+score+
+        "&avg="+avg+
+        "&misses="+wrong+
+        "&score="+finalScore+
+        "&game=number"+
+        "&origin="+origin;
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forgot Password</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+/* Only responsiveness added - no layout change */
+
+@media (max-width:1024px){
+body{
+padding:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+}
+
+@media (max-width:768px){
+
+body{
+padding:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+margin:auto;
+}
+
+}
+
+@media (max-width:480px){
+
+body{
+padding:15px;
+display:flex;
+justify-content:center;
+align-items:flex-start;
+min-height:100vh;
+}
+
+.container{
+margin-top:40px;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<!-- Step Indicator -->
+<div class="step-indicator">
+Step 1 of 3 — Verify Email
+</div>
+
+<h2>Forgot Password</h2>
+
+<!-- Description -->
+<div class="auth-desc">
+Enter your registered email address and we will send you a One-Time Password (OTP).
+</div>
+
+<!-- Email Field -->
+<div class="input-group">
+<input type="email" id="email" placeholder=" " required>
+<label>Email Address</label>
+<div class="error-msg" id="emailError"></div>
+</div>
+
+<button onclick="sendOtp()">Send OTP</button>
+
+<!-- Success Message -->
+<div id="successMessage"></div>
+
+<div class="links">
+<a href="login.html">Back to Login</a>
+</div>
+
+</div>
+
+<script src="js/api.js"></script>
+
+<script>
+function showSuccess(msg) {
+document.getElementById("successMessage").innerHTML =
+`<div class="success-box">
+<i class="fa-solid fa-circle-check"></i> ${msg}
+</div>`;
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+if (localStorage.getItem("darkMode") === "true") {
+document.body.classList.add("dark");
+}
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Verify OTP</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+/* ---------- Tablet ---------- */
+@media (max-width:1024px){
+
+body{
+padding:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+margin:auto;
+}
+
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width:768px){
+
+body{
+padding:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+/* Keep OTP boxes in one row */
+.otp-container{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+}
+
+/* Slightly smaller boxes */
+.otp-input{
+width:42px;
+height:42px;
+font-size:18px;
+text-align:center;
+}
+
+}
+
+/* ---------- Small Mobile ---------- */
+@media (max-width:480px){
+
+body{
+padding:15px;
+display:flex;
+justify-content:center;
+align-items:flex-start;
+min-height:100vh;
+}
+
+.container{
+margin-top:40px;
+}
+
+/* Reduce size more for very small screens */
+.otp-input{
+width:36px;
+height:36px;
+font-size:16px;
+}
+
+button{
+width:100%;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<div class="step-indicator">
+Step 2 of 3 — Verify OTP
+</div>
+
+<div class="progress-bar">
+<div class="progress-fill"></div>
+</div>
+
+<h2>Verify OTP</h2>
+
+<div class="auth-desc">
+Enter the 6-digit OTP sent to your email.
+</div>
+
+<div class="otp-container">
+<input type="text" maxlength="1" class="otp-input">
+<input type="text" maxlength="1" class="otp-input">
+<input type="text" maxlength="1" class="otp-input">
+<input type="text" maxlength="1" class="otp-input">
+<input type="text" maxlength="1" class="otp-input">
+<input type="text" maxlength="1" class="otp-input">
+</div>
+
+<div class="timer" id="timer">
+OTP expires in 10:00
+</div>
+
+<div class="resend-btn disabled" id="resendBtn">
+Resend OTP (30s)
+</div>
+
+<div class="error-msg" id="otpError"></div>
+
+<button id="verifyBtn">Verify OTP</button>
+
+<div id="successMessage"></div>
+
+</div>
+
+<script src="js/api.js"></script>
+
+<script>
+const inputs = document.querySelectorAll(".otp-input");
+const resendBtn = document.getElementById("resendBtn");
+const verifyBtn = document.getElementById("verifyBtn");
+const errorBox = document.getElementById("otpError");
+const successBox = document.getElementById("successMessage");
+const timerDisplay = document.getElementById("timer");
+
+const email = localStorage.getItem("resetEmail");
+
+if (!email) {
+    window.location.href = "login.html";
+}
+
+/* OTP AUTO FOCUS */
+
+inputs.forEach((input, index) => {
+
+    input.addEventListener("input", () => {
+        input.value = input.value.replace(/[^0-9]/g, '');
+
+        if (input.value && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+        }
+    });
+
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !input.value && index > 0) {
+            inputs[index - 1].focus();
+        }
+    });
+
+});
+
+/* OTP EXPIRY TIMER */
+
+let expiryTime = 600;
+
+const expiryInterval = setInterval(() => {
+
+    if (expiryTime > 0) {
+
+        expiryTime--;
+
+        const minutes = Math.floor(expiryTime / 60);
+        const seconds = expiryTime % 60;
+
+        timerDisplay.innerText =
+            `OTP expires in ${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+
+    } else {
+
+        clearInterval(expiryInterval);
+        timerDisplay.innerText = "OTP expired";
+        verifyBtn.disabled = true;
+
+    }
+
+}, 1000);
+
+
+/* RESEND COOLDOWN */
+
+let cooldown = 30;
+let resendInterval;
+
+function startResendCooldown() {
+
+    resendBtn.classList.add("disabled");
+    resendBtn.innerText = `Resend OTP (${cooldown}s)`;
+
+    resendInterval = setInterval(() => {
+
+        cooldown--;
+
+        if (cooldown > 0) {
+
+            resendBtn.innerText = `Resend OTP (${cooldown}s)`;
+
+        } else {
+
+            clearInterval(resendInterval);
+            resendBtn.classList.remove("disabled");
+            resendBtn.innerText = "Resend OTP";
+            cooldown = 30;
+
+        }
+
+    }, 1000);
+}
+
+startResendCooldown();
+
+
+/* RESEND OTP */
+
+resendBtn.addEventListener("click", () => {
+
+    if (resendBtn.classList.contains("disabled")) return;
+
+    fetch(BASE_URL + "send_otp.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.status === "success") {
+
+            alert("New OTP sent to your email");
+            expiryTime = 600;
+            startResendCooldown();
+
+        } else {
+            alert("Failed to resend OTP");
+        }
+
+    })
+    .catch(() => alert("Server error"));
+
+});
+
+
+/* VERIFY OTP */
+
+verifyBtn.addEventListener("click", () => {
+
+    const otp = Array.from(inputs).map(i => i.value).join("");
+
+    errorBox.innerText = "";
+
+    if (otp.length !== 6) {
+        errorBox.innerText = "Enter complete 6-digit OTP";
+        return;
+    }
+
+    fetch(BASE_URL + "verify_otp.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, otp: otp })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.status === "success") {
+
+            successBox.innerHTML =
+                `<div class="success-box">
+                    OTP Verified. Redirecting...
+                 </div>`;
+
+            setTimeout(() => {
+                window.location.href = "reset.html";
+            }, 1500);
+
+        } else {
+            errorBox.innerText = data.msg || "Invalid OTP";
+        }
+
+    })
+    .catch(() => errorBox.innerText = "Server error");
+
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+if (localStorage.getItem("darkMode") === "true") {
+document.body.classList.add("dark");
+}
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Performance Report</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    background:linear-gradient(135deg,#1f2937,#111827);
+    font-family:'Segoe UI',sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    color:white;
+    padding:20px;
+    box-sizing:border-box;
+}
+
+.card{
+    background:white;
+    color:#1e293b;
+    padding:35px;
+    width:420px;
+    max-width:100%;
+    border-radius:24px;
+    text-align:center;
+    box-shadow:0 25px 50px rgba(0,0,0,0.35);
+}
+
+h2{
+    margin-top:0;
+}
+
+.metric{
+    display:flex;
+    justify-content:space-between;
+    margin:10px 0;
+    font-size:16px;
+}
+
+.badge{
+    margin-top:14px;
+    background:#eef2ff;
+    color:#4f46e5;
+    padding:8px 14px;
+    border-radius:14px;
+    display:inline-block;
+    font-size:14px;
+    font-weight:500;
+}
+
+.buttons{
+    margin-top:25px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+button{
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:500;
+}
+
+.primary{
+    background:#6366f1;
+    color:white;
+}
+
+.primary:hover{
+    background:#4f46e5;
+}
+
+.secondary{
+    background:white;
+    border:2px solid #6366f1;
+    color:#6366f1;
+}
+
+.secondary:hover{
+    background:#eef2ff;
+}
+
+/* ================= TABLET ================= */
+
+@media (max-width:1024px){
+
+.card{
+    width:380px;
+    padding:30px;
+}
+
+.metric{
+    font-size:15px;
+}
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width:768px){
+
+body{
+    align-items:flex-start;
+    padding-top:50px;
+}
+
+.card{
+    width:100%;
+    padding:28px;
+}
+
+.metric{
+    font-size:14px;
+}
+
+button{
+    padding:11px;
+    font-size:14px;
+}
+
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width:480px){
+
+.card{
+    padding:24px;
+}
+
+h2{
+    font-size:20px;
+}
+
+.metric{
+    font-size:13px;
+}
+
+button{
+    padding:10px;
+    font-size:13px;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>Performance Report 🎯</h2>
+
+    <div class="metric"><span>Hits</span><strong id="hits"></strong></div>
+    <div class="metric"><span>Misses</span><strong id="misses"></strong></div>
+    <div class="metric"><span>Avg Reaction</span><strong id="avg"></strong></div>
+    <div class="metric"><span>Score</span><strong id="score"></strong></div>
+
+    <div id="bestBlock"></div>
+    <div id="previousBlock"></div>
+
+    <div class="buttons">
+        <button class="primary" onclick="restart()">Start Again</button>
+        <button class="secondary" onclick="goHome()">Back To Home</button>
+    </div>
+</div>
+
+<script>
+
+/* ================= READ URL PARAMETERS ================= */
+
+const params = new URLSearchParams(window.location.search);
+
+const hits = parseInt(params.get("hits")) || 0;
+const avg = parseInt(params.get("avg")) || 0;
+const misses = parseInt(params.get("misses")) || 0;
+const score = parseInt(params.get("score")) || 0;
+const game = params.get("game") || "moving";
+
+/* ================= DISPLAY VALUES ================= */
+
+document.getElementById("hits").innerText = hits;
+document.getElementById("misses").innerText = misses;
+document.getElementById("avg").innerText = avg + " ms";
+document.getElementById("score").innerText = score;
+
+/* ================= LOAD SESSIONS ================= */
+
+let sessions = JSON.parse(localStorage.getItem("sessions")) || [];
+
+/* Filter only same game sessions */
+let sameGameSessions = sessions.filter(s => s.gameType === game);
+
+const prevSession = sameGameSessions.length > 0
+? sameGameSessions[sameGameSessions.length - 1]
+: null;
+
+/* ================= PERSONAL BEST CHECK (BEFORE PUSH) ================= */
+
+let bestScore = sameGameSessions.length > 0
+? Math.max(...sameGameSessions.map(s => s.score))
+: 0;
+
+if(score > bestScore){
+document.getElementById("bestBlock").innerHTML =
+`<div class="badge">🏆 New Personal Best</div>`;
+}
+
+/* ================= PREVIOUS COMPARISON ================= */
+
+if(prevSession){
+
+const improvement = prevSession.avgReaction - avg;
+
+document.getElementById("previousBlock").innerHTML =
+`<div class="badge">
+Vs Previous: ${
+improvement > 0
+? "Faster by " + improvement + " ms"
+: improvement < 0
+? "Slower by " + (-improvement) + " ms"
+: "No change"
+}
+</div>`;
+}
+
+/* ================= SAVE SESSION AFTER CHECK ================= */
+
+sessions.push({
+gameType: game,
+score: score,
+avgReaction: avg,
+wrong: misses,
+timestamp: Date.now()
+});
+
+localStorage.setItem("sessions", JSON.stringify(sessions));
+
+/* ================= BUTTONS ================= */
+
+function restart(){
+    const origin = params.get("origin") || "home";
+    window.location.href = game + ".html?origin=" + origin;
+}
+
+function goHome(){
+
+    const origin = params.get("origin");
+
+    if(origin === "sports"){
+        window.location.href = "sports.html";
+    } else {
+        window.location.href = "home.html";
+    }
+}
+
+</script>
+
+</body>
+</html>

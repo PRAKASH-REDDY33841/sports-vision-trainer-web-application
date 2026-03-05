@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+
+        body{
+            margin:0;
+            font-family:'Segoe UI',sans-serif;
+        }
+
+        .container{
+            max-width:420px;
+            width:92%;
+            margin:30px auto;
+        }
+
+        /* ===== HEADER ===== */
+
+        .app-header{
+            text-align:center;
+            margin-bottom:15px; /* reduced */
+        }
+
+        .app-logo{
+            width:80px;
+            margin-bottom:6px;
+        }
+
+        .app-title{
+            font-size:18px;
+            font-weight:700;
+            color:#ffffff;
+        }
+
+        .app-subtitle{
+            font-size:12px;
+            color:#64748b;
+            margin-top:3px;
+        }
+
+        h2{
+            text-align:center;
+            margin:15px 0 18px 0; /* reduced */
+        }
+
+        /* ===== REDUCED INPUT SPACING ===== */
+
+        .input-group{
+            margin-bottom:12px; /* reduced space */
+        }
+
+        .error-msg {
+            color: #ff4d4f;
+            font-size: 12px;
+            margin-top: 4px;
+            min-height: 16px;
+        }
+
+        .input-error input {
+            border: 1px solid #ff4d4f !important;
+        }
+
+        .auth-error {
+            text-align: center;
+            color: #ff4d4f;
+            margin-top: 10px;
+            font-size: 13px;
+            min-height: 18px;
+        }
+
+        .success-msg {
+            text-align: center;
+            color: #00c896;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 14px;
+            cursor: pointer;
+            color: rgba(0,0,0,0.6);
+        }
+
+        .match-icon {
+            position: absolute;
+            right: 12px;
+            top: 14px;
+            display: none;
+        }
+
+        button{
+            margin-top:10px; /* reduced */
+        }
+
+        .links{
+            margin-top:15px;
+            text-align:center;
+        }
+
+        /* ===== RESPONSIVE ===== */
+
+        @media(max-width:480px){
+
+            .container{
+                width:94%;
+                margin:20px auto;
+            }
+
+            .app-logo{
+                width:70px;
+            }
+
+            .app-title{
+                font-size:16px;
+            }
+
+            .app-subtitle{
+                font-size:11px;
+            }
+
+            h2{
+                font-size:20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ✅ LOGO + TEXT ADDED -->
+    <div class="app-header">
+        <img src="https://res.cloudinary.com/dmvlmpm0v/image/upload/v1772530064/eye-logo-web_xnkl2g.png"
+             class="app-logo"
+             alt="Sports Vision Logo">
+
+        <div class="app-title">Sports Vision Trainer</div>
+        <div class="app-subtitle">
+            Train Faster • React Smarter • Improve Visual Performance
+        </div>
+    </div>
+
+    <!-- Username -->
+    <div class="input-group" id="usernameGroup">
+        <input type="text" id="username" placeholder=" " required>
+        <label>Username</label>
+        <div class="error-msg" id="usernameError"></div>
+    </div>
+
+    <!-- Email -->
+    <div class="input-group" id="emailGroup">
+        <input type="email" id="email" placeholder=" " required>
+        <label>Email</label>
+        <div class="error-msg" id="emailError"></div>
+    </div>
+
+    <!-- Password -->
+    <div class="input-group" id="passwordGroup">
+        <input type="password" id="password" placeholder=" " required>
+        <label>Password</label>
+
+        <span class="toggle-password" id="eyeBtn">
+            <i class="fa-solid fa-eye"></i>
+        </span>
+
+        <div class="error-msg" id="passwordError"></div>
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="input-group" id="confirmGroup">
+        <input type="password" id="confirm" placeholder=" " required>
+        <label>Confirm Password</label>
+
+        <span class="match-icon" id="matchIcon">
+            <i class="fa-solid fa-check" style="color:#00ffae;"></i>
+        </span>
+
+        <div class="error-msg" id="confirmError"></div>
+    </div>
+
+    <button id="registerBtn">Register</button>
+
+    <div class="auth-error" id="authError"></div>
+    <div class="success-msg" id="successMsg"></div>
+
+    <div class="links">
+        <a href="login.html">Already have an account?</a>
+    </div>
+</div>
+
+<script src="js/api.js"></script>
+
+<script>
+const username = document.getElementById("username");
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const confirm = document.getElementById("confirm");
+
+const registerBtn = document.getElementById("registerBtn");
+
+const usernameError = document.getElementById("usernameError");
+const emailError = document.getElementById("emailError");
+const passwordError = document.getElementById("passwordError");
+const confirmError = document.getElementById("confirmError");
+const authError = document.getElementById("authError");
+const successMsg = document.getElementById("successMsg");
+
+const usernameGroup = document.getElementById("usernameGroup");
+const emailGroup = document.getElementById("emailGroup");
+const passwordGroup = document.getElementById("passwordGroup");
+const confirmGroup = document.getElementById("confirmGroup");
+
+const matchIcon = document.getElementById("matchIcon");
+const eyeBtn = document.getElementById("eyeBtn");
+
+/* ========================= */
+/* STRONG EMAIL VALIDATION */
+/* ========================= */
+
+function isValidEmail(value) {
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+
+    if (!emailRegex.test(value)) return false;
+
+    const allowedDomains = [
+        "gmail.com",
+        "yahoo.com",
+        "outlook.com",
+        "hotmail.com",
+        "icloud.com"
+    ];
+
+    const domain = value.split("@")[1].toLowerCase();
+
+    return allowedDomains.includes(domain);
+}
+
+/* ========================= */
+/* BLUR VALIDATION */
+/* ========================= */
+
+function validateBlur(field, errorBox, group, message) {
+    field.addEventListener("blur", () => {
+        if (field.value.trim() === "") {
+            errorBox.innerText = message;
+            group.classList.add("input-error");
+        }
+    });
+}
+
+validateBlur(username, usernameError, usernameGroup, "Username is required");
+validateBlur(email, emailError, emailGroup, "Email is required");
+validateBlur(password, passwordError, passwordGroup, "Password is required");
+validateBlur(confirm, confirmError, confirmGroup, "Confirm your password");
+
+/* ========================= */
+/* CLEAR ERRORS ON INPUT */
+/* ========================= */
+
+function clearError(field, errorBox, group) {
+    field.addEventListener("input", () => {
+        errorBox.innerText = "";
+        group.classList.remove("input-error");
+        authError.innerText = "";
+    });
+}
+
+clearError(username, usernameError, usernameGroup);
+clearError(email, emailError, emailGroup);
+clearError(password, passwordError, passwordGroup);
+clearError(confirm, confirmError, confirmGroup);
+
+/* ========================= */
+/* PASSWORD TOGGLE */
+/* ========================= */
+
+eyeBtn.addEventListener("click", () => {
+    const icon = eyeBtn.querySelector("i");
+
+    if (password.type === "password") {
+        password.type = "text";
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+    } else {
+        password.type = "password";
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+    }
+});
+
+/* ========================= */
+/* PASSWORD MATCH CHECK */
+/* ========================= */
+
+confirm.addEventListener("input", () => {
+
+    if (confirm.value === "") {
+        matchIcon.style.display = "none";
+        confirmError.innerText = "";
+        return;
+    }
+
+    if (password.value === confirm.value) {
+        matchIcon.style.display = "block";
+        confirmError.innerText = "";
+    } else {
+        matchIcon.style.display = "none";
+        confirmError.innerText = "Passwords do not match";
+    }
+});
+
+/* ========================= */
+/* REGISTER CLICK */
+/* ========================= */
+
+registerBtn.addEventListener("click", () => {
+
+    let valid = true;
+    authError.innerText = "";
+    successMsg.innerText = "";
+
+    if (username.value.trim() === "") {
+        usernameError.innerText = "Username is required";
+        valid = false;
+    }
+
+    if (email.value.trim() === "") {
+        emailError.innerText = "Email is required";
+        valid = false;
+    } else if (!isValidEmail(email.value.trim())) {
+        emailError.innerText = "Only Gmail, Yahoo, Outlook, Hotmail, or iCloud allowed";
+        valid = false;
+    }
+
+    if (password.value.trim() === "") {
+        passwordError.innerText = "Password is required";
+        valid = false;
+    }
+
+    if (confirm.value.trim() === "") {
+        confirmError.innerText = "Confirm your password";
+        valid = false;
+    }
+
+    if (password.value !== confirm.value) {
+        confirmError.innerText = "Passwords do not match";
+        valid = false;
+    }
+
+    if (!valid) return;
+
+    fetch(BASE_URL + "register.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            username: username.value.trim(),
+            email: email.value.trim(),
+            password: password.value.trim()
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.status === "success") {
+            successMsg.innerText = "Account created successfully!";
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 1500);
+        } else {
+            authError.innerText = data.message || "Registration failed";
+        }
+
+    })
+    .catch(() => {
+        authError.innerText = "Server connection failed";
+    });
+
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark");
+    }
+});
+</script>
+
+</body>
+</html>

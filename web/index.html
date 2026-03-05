@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sports Vision Training Application</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background:#0f172a;
+color:white;
+line-height:1.6;
+}
+
+/* HERO */
+
+.hero{
+padding:80px 20px;
+text-align:center;
+background:linear-gradient(135deg,#0f172a,#1e293b);
+}
+
+.logo{
+width:110px;
+margin-bottom:20px;
+}
+
+.hero h1{
+font-size:38px;
+margin-bottom:10px;
+}
+
+.hero p{
+max-width:650px;
+margin:auto;
+color:#cbd5f5;
+font-size:17px;
+}
+
+.cta{
+margin-top:35px;
+}
+
+.cta button{
+padding:16px 35px;
+font-size:18px;
+border:none;
+border-radius:10px;
+background:#6366f1;
+color:white;
+cursor:pointer;
+transition:.3s;
+}
+
+.cta button:hover{
+background:#4f46e5;
+transform:scale(1.05);
+}
+
+/* SECTION */
+
+.section{
+padding:70px 20px;
+text-align:center;
+}
+
+.section h2{
+font-size:30px;
+margin-bottom:20px;
+}
+
+.section p{
+max-width:700px;
+margin:auto;
+color:#cbd5f5;
+}
+
+/* FEATURES */
+
+.features{
+margin-top:40px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+max-width:1000px;
+margin-left:auto;
+margin-right:auto;
+}
+
+.feature{
+background:white;
+color:#0f172a;
+padding:30px;
+border-radius:16px;
+box-shadow:0 10px 25px rgba(0,0,0,0.25);
+}
+
+.feature i{
+font-size:32px;
+color:#6366f1;
+margin-bottom:10px;
+}
+
+/* HOW IT WORKS */
+
+.steps{
+margin-top:40px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+max-width:1000px;
+margin-left:auto;
+margin-right:auto;
+}
+
+.step{
+background:#1e293b;
+padding:25px;
+border-radius:14px;
+}
+
+/* BENEFITS */
+
+.benefits{
+margin-top:35px;
+max-width:800px;
+margin-left:auto;
+margin-right:auto;
+text-align:left;
+}
+
+.benefits li{
+margin-bottom:12px;
+}
+
+/* FINAL CTA */
+
+.final-cta{
+padding:80px 20px;
+text-align:center;
+background:#1e293b;
+}
+
+.final-cta button{
+padding:18px 40px;
+font-size:20px;
+border:none;
+border-radius:10px;
+background:#6366f1;
+color:white;
+cursor:pointer;
+}
+
+.final-cta button:hover{
+background:#4f46e5;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+.hero h1{
+font-size:30px;
+}
+
+.section h2{
+font-size:26px;
+}
+
+.cta button{
+font-size:16px;
+padding:14px 28px;
+}
+
+}
+
+@media(max-width:480px){
+
+.hero{
+padding:60px 15px;
+}
+
+.hero h1{
+font-size:26px;
+}
+
+.section{
+padding:50px 15px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HERO SECTION -->
+
+<section class="hero">
+
+<img class="logo"
+src="https://res.cloudinary.com/dmvlmpm0v/image/upload/v1772530064/eye-logo-web_xnkl2g.png">
+
+<h1>Sports Vision Training Application</h1>
+
+<p>
+A smart training platform designed to improve reaction time,
+visual processing speed, and decision making ability for athletes.
+</p>
+
+<div class="cta">
+<button onclick="startApp()">Get Started</button>
+</div>
+
+</section>
+
+<!-- ABOUT PROJECT -->
+
+<section class="section">
+
+<h2>About The Project</h2>
+
+<p>
+The Sports Vision Training Application is a web-based training
+system that helps athletes and individuals improve their
+visual reaction time, eye coordination, and focus using
+interactive training drills. The platform provides structured
+exercises and performance analytics to track user improvement.
+</p>
+
+</section>
+
+<!-- FEATURES -->
+
+<section class="section">
+
+<h2>Key Features</h2>
+
+<div class="features">
+
+<div class="feature">
+<i class="fa-solid fa-bolt"></i>
+<h3>Reaction Training</h3>
+<p>Improve response speed with interactive drills.</p>
+</div>
+
+<div class="feature">
+<i class="fa-solid fa-eye"></i>
+<h3>Visual Focus</h3>
+<p>Train your eyes to react faster to visual stimuli.</p>
+</div>
+
+<div class="feature">
+<i class="fa-solid fa-chart-line"></i>
+<h3>Performance Tracking</h3>
+<p>Analyze improvement through real-time statistics.</p>
+</div>
+
+<div class="feature">
+<i class="fa-solid fa-dumbbell"></i>
+<h3>Athlete Training</h3>
+<p>Designed specifically for sports vision development.</p>
+</div>
+
+</div>
+
+</section>
+
+<!-- HOW IT WORKS -->
+
+<section class="section">
+
+<h2>How It Works</h2>
+
+<div class="steps">
+
+<div class="step">
+<h3>1. Register</h3>
+<p>Create your account to begin vision training.</p>
+</div>
+
+<div class="step">
+<h3>2. Practice Drills</h3>
+<p>Play reaction-based games designed for visual training.</p>
+</div>
+
+<div class="step">
+<h3>3. Track Progress</h3>
+<p>View statistics and analyze improvement over time.</p>
+</div>
+
+</div>
+
+</section>
+
+<!-- BENEFITS -->
+
+<section class="section">
+
+<h2>Benefits</h2>
+
+<ul class="benefits">
+
+<li>✔ Improves reaction time</li>
+<li>✔ Enhances focus and concentration</li>
+<li>✔ Helps athletes make faster decisions</li>
+<li>✔ Tracks performance improvement</li>
+<li>✔ Provides engaging training exercises</li>
+
+</ul>
+
+</section>
+
+<!-- FINAL CTA -->
+
+<section class="final-cta">
+
+<h2>Start Your Vision Training Journey Today</h2>
+
+<br>
+
+<button onclick="startApp()">Get Started</button>
+
+</section>
+
+<script>
+
+function startApp(){
+window.location.href="login.html"
+}
+
+</script>
+
+</body>
+</html>

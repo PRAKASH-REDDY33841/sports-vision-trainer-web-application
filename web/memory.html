@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Memory Grid</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    background:black;
+    font-family:'Segoe UI',sans-serif;
+    color:white;
+    overflow:hidden;
+}
+
+/* ---------- TOP BAR ---------- */
+
+.topbar{
+    position:absolute;
+    top:0;
+    width:100%;
+    padding:18px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-sizing:border-box;
+    z-index:1000;
+    position:relative;
+}
+
+#speedLabel{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.settings{
+    cursor:pointer;
+    font-size:20px;
+}
+
+/* ---------- LEVEL ---------- */
+
+.level{
+    text-align:center;
+    margin-top:70px;
+    font-size:18px;
+}
+
+/* ---------- GRID ---------- */
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    padding:20px;
+    max-width:450px;
+    margin:20px auto;
+}
+
+.cell{
+    aspect-ratio:1;
+    background:#333;
+    border-radius:12px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.cell.active{
+    background:#22c55e;
+}
+
+/* ---------- FOOTER ---------- */
+
+.footer{
+    position:absolute;
+    bottom:20px;
+    width:100%;
+    text-align:center;
+}
+
+/* ---------- SETTINGS ---------- */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:2000;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.modal-box{
+    background:#d7ccc8;
+    color:black;
+    width:380px;
+    padding:30px;
+    border-radius:25px;
+}
+
+.chip{
+    padding:8px 16px;
+    border-radius:12px;
+    border:2px solid #888;
+    cursor:pointer;
+    margin-right:8px;
+    margin-top:8px;
+    display:inline-block;
+}
+
+.chip.active{
+    background:#f4c7a1;
+    border-color:#f4c7a1;
+}
+
+.exit-btn{
+    margin-top:20px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:30px;
+    background:red;
+    color:white;
+    cursor:pointer;
+}
+
+/* ---------- RESULT ---------- */
+
+.report-overlay{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#1e293b,#0f172a);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:5000;
+}
+
+.report-card{
+    background:#f1f5f9;
+    color:#0f172a;
+    width:400px;
+    padding:40px;
+    border-radius:30px;
+}
+
+.report-row{
+    display:flex;
+    justify-content:space-between;
+    margin:10px 0;
+}
+
+.primary-btn{
+    width:100%;
+    padding:15px;
+    margin-top:20px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(to right,#6366f1,#4f46e5);
+    color:white;
+    cursor:pointer;
+}
+
+.outline-btn{
+    width:100%;
+    padding:15px;
+    margin-top:12px;
+    border-radius:12px;
+    background:transparent;
+    border:2px solid #4f46e5;
+    color:#4f46e5;
+    cursor:pointer;
+}
+
+/* ============================ */
+/* TABLET RESPONSIVE */
+/* ============================ */
+
+@media (max-width:1024px){
+
+.topbar{
+padding:16px 20px;
+font-size:16px;
+}
+
+.settings{
+font-size:18px;
+}
+
+.level{
+font-size:17px;
+margin-top:65px;
+}
+
+.grid{
+max-width:380px;
+gap:10px;
+}
+
+.modal-box{
+width:340px;
+padding:26px;
+}
+
+.report-card{
+width:360px;
+padding:30px;
+}
+
+}
+
+/* ============================ */
+/* MOBILE RESPONSIVE */
+/* ============================ */
+
+@media (max-width:768px){
+
+.topbar{
+padding:14px 18px;
+font-size:15px;
+}
+
+.settings{
+font-size:18px;
+}
+
+.level{
+font-size:16px;
+margin-top:60px;
+}
+
+.grid{
+max-width:300px;
+gap:8px;
+padding:15px;
+}
+
+.cell{
+border-radius:10px;
+}
+
+.footer{
+font-size:14px;
+bottom:18px;
+}
+
+.modal-box{
+width:85%;
+padding:24px;
+}
+
+.report-card{
+width:85%;
+padding:28px;
+}
+
+.primary-btn,
+.outline-btn{
+font-size:15px;
+padding:14px;
+}
+
+}
+
+/* ============================ */
+/* SMALL MOBILE */
+/* ============================ */
+
+@media (max-width:480px){
+
+.topbar{
+font-size:14px;
+padding:12px 14px;
+}
+
+.level{
+font-size:15px;
+margin-top:55px;
+}
+
+.grid{
+max-width:260px;
+gap:7px;
+}
+
+.cell{
+border-radius:8px;
+}
+
+.footer{
+font-size:13px;
+}
+
+.modal-box{
+padding:20px;
+}
+
+.report-card{
+padding:24px;
+}
+
+.primary-btn,
+.outline-btn{
+font-size:14px;
+padding:12px;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <span id="timeText">30</span>
+    <span id="speedLabel">MEDIUM</span>
+    <span class="settings" onclick="openSettings()">⚙</span>
+</div>
+
+<div class="level">Level <span id="levelText">1</span></div>
+
+<div class="grid" id="grid"></div>
+
+<div class="footer">
+    <div>Score <span id="score">0</span></div>
+    <div>Wrong <span id="wrong">0</span></div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settingsModal" class="modal">
+<div class="modal-box">
+<h2>Drill Settings</h2>
+
+<p>Motion Speed</p>
+<div id="speedGroup">
+<span class="chip" onclick="setSpeed('SLOW',1200,this)">SLOW</span>
+<span class="chip active" onclick="setSpeed('MEDIUM',800,this)">MEDIUM</span>
+<span class="chip" onclick="setSpeed('FAST',500,this)">FAST</span>
+</div>
+
+<p style="margin-top:15px;">Duration</p>
+<div id="timeGroup">
+<span class="chip" onclick="setTime(20,this)">20s</span>
+<span class="chip active" onclick="setTime(30,this)">30s</span>
+<span class="chip" onclick="setTime(60,this)">60s</span>
+</div>
+
+<button class="exit-btn" onclick="exitDrill()">Exit Drill</button>
+</div>
+</div>
+
+<script>
+
+/* ---------- STATE ---------- */
+
+let sessionSeconds = 30
+let timeLeft = 30
+let flashDuration = 800
+let level = 1
+let pattern = []
+let userInput = []
+let showPattern = false
+
+let score = 0
+let wrong = 0
+let reactionTotal = 0
+let appearTime = 0
+
+let paused = false
+let gameOver = false
+let timerInterval
+
+const gridSize = 16
+const grid = document.getElementById("grid")
+
+/* ---------- CREATE GRID ---------- */
+
+for(let i=0;i<gridSize;i++){
+    const cell = document.createElement("div")
+    cell.className="cell"
+    cell.dataset.index=i
+    cell.onclick=()=>handleClick(i)
+    grid.appendChild(cell)
+}
+
+/* ---------- TIMER ---------- */
+
+function startTimer(){
+timerInterval=setInterval(()=>{
+if(!paused && !gameOver){
+timeLeft--
+document.getElementById("timeText").innerText=timeLeft
+if(timeLeft<=0){
+clearInterval(timerInterval)
+endGame()
+}
+}
+},1000)
+}
+
+/* ---------- PATTERN ---------- */
+
+function generatePattern(){
+const count = 2 + level
+pattern = [...Array(gridSize).keys()].sort(()=>0.5-Math.random()).slice(0,count)
+userInput=[]
+showPattern=true
+appearTime = Date.now()
+flashPattern()
+}
+
+function flashPattern(){
+pattern.forEach(i=>{
+grid.children[i].classList.add("active")
+})
+
+setTimeout(()=>{
+pattern.forEach(i=>{
+grid.children[i].classList.remove("active")
+})
+showPattern=false
+},flashDuration)
+}
+
+/* ---------- HANDLE CLICK ---------- */
+
+function handleClick(index){
+if(paused || showPattern || gameOver) return
+
+userInput.push(index)
+
+if(!pattern.includes(index)){
+wrong++
+level=1
+updateUI()
+setTimeout(generatePattern,500)
+}
+else if(userInput.length===pattern.length){
+let rt = Date.now()-appearTime
+reactionTotal+=rt
+score++
+level++
+updateUI()
+setTimeout(generatePattern,500)
+}
+}
+
+/* ---------- UI ---------- */
+
+function updateUI(){
+document.getElementById("score").innerText=score
+document.getElementById("wrong").innerText=wrong
+document.getElementById("levelText").innerText=level
+}
+
+/* ---------- SETTINGS ---------- */
+
+function openSettings(){
+paused=true
+document.getElementById("settingsModal").classList.add("active")
+}
+
+document.getElementById("settingsModal").onclick=function(e){
+if(e.target===this){
+paused=false
+this.classList.remove("active")
+}
+}
+
+function setSpeed(label,duration,el){
+flashDuration=duration
+document.getElementById("speedLabel").innerText=label
+document.querySelectorAll("#speedGroup .chip").forEach(c=>c.classList.remove("active"))
+el.classList.add("active")
+}
+
+function setTime(t,el){
+sessionSeconds=t
+timeLeft=t
+document.getElementById("timeText").innerText=t
+document.querySelectorAll("#timeGroup .chip").forEach(c=>c.classList.remove("active"))
+el.classList.add("active")
+}
+
+function exitDrill(){
+window.location.href="sports.html"
+}
+
+/* ---------- RESULT ---------- */
+
+function endGame(){
+gameOver=true
+
+let avg = score===0?0:Math.floor(reactionTotal/score)
+let finalScore = score*200 - wrong*50 - Math.floor(avg/6)
+
+const overlay=document.createElement("div")
+overlay.className="report-overlay"
+overlay.innerHTML=`
+<div class="report-card">
+<h2>Performance Report 🧩</h2>
+<div class="report-row"><span>Score</span><span>${score}</span></div>
+<div class="report-row"><span>Wrong</span><span>${wrong}</span></div>
+<div class="report-row"><span>Avg Reaction</span><span>${avg} ms</span></div>
+<div class="report-row"><span>Final Score</span><span>${finalScore}</span></div>
+<button class="primary-btn" onclick="location.reload()">Start Again</button>
+<button class="outline-btn" onclick="goHome()">Back To Home</button>
+</div>
+`
+document.body.appendChild(overlay)
+}
+
+function goHome(){
+window.location.href="sports.html"
+}
+
+/* ---------- START ---------- */
+
+startTimer()
+generatePattern()
+
+</script>
+
+</body>
+</html>

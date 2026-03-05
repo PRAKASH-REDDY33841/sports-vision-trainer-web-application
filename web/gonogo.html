@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Go / No-Go Flash</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    background:black;
+    font-family:'Segoe UI',sans-serif;
+    overflow:hidden;
+    color:white;
+}
+
+/* TOP BAR */
+.topbar{
+    position:absolute;
+    top:0;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    padding:20px 30px;
+    box-sizing:border-box;
+    font-size:18px;
+    align-items:center;
+}
+
+.settings-icon{
+    cursor:pointer;
+    font-size:22px;
+}
+
+/* ================= CENTER FIX ADDED HERE ================= */
+.stimulus{
+    position:absolute;
+    width:220px;
+    height:220px;
+    border-radius:28px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:40px;
+    font-weight:bold;
+    color:black;
+    cursor:pointer;
+
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+}
+/* ========================================================= */
+
+/* FOOTER STATS */
+.bottom-stats{
+    position:absolute;
+    bottom:20px;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    color:gray;
+}
+
+/* MODAL */
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.modal-content{
+    background:#ede2d9;
+    padding:30px;
+    border-radius:28px;
+    width:380px;
+    color:black;
+}
+
+.chip{
+    padding:8px 16px;
+    border-radius:12px;
+    border:2px solid #888;
+    cursor:pointer;
+}
+
+.chip.active{
+    background:#f4c7a1;
+    border-color:#f4c7a1;
+}
+
+.exit-btn{
+    margin-top:20px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:50px;
+    background:red;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+/* ============================ */
+/* TABLET RESPONSIVE */
+/* ============================ */
+
+@media (max-width:1024px){
+
+.topbar{
+padding:18px 24px;
+font-size:16px;
+}
+
+.settings-icon{
+font-size:20px;
+}
+
+.stimulus{
+width:190px;
+height:190px;
+font-size:34px;
+}
+
+.bottom-stats{
+gap:30px;
+font-size:15px;
+}
+
+.modal-content{
+width:340px;
+padding:26px;
+}
+
+}
+
+/* ============================ */
+/* MOBILE RESPONSIVE */
+/* ============================ */
+
+@media (max-width:768px){
+
+.topbar{
+padding:14px 18px;
+font-size:15px;
+}
+
+.settings-icon{
+font-size:18px;
+}
+
+.stimulus{
+width:160px;
+height:160px;
+font-size:30px;
+border-radius:24px;
+}
+
+.bottom-stats{
+gap:24px;
+font-size:14px;
+bottom:18px;
+}
+
+.modal-content{
+width:85%;
+padding:24px;
+}
+
+.chip{
+padding:7px 14px;
+font-size:14px;
+}
+
+.exit-btn{
+font-size:15px;
+padding:13px;
+}
+
+}
+
+/* ============================ */
+/* SMALL MOBILE */
+/* ============================ */
+
+@media (max-width:480px){
+
+.topbar{
+padding:12px 14px;
+font-size:14px;
+}
+
+.settings-icon{
+font-size:16px;
+}
+
+.stimulus{
+width:130px;
+height:130px;
+font-size:24px;
+border-radius:20px;
+}
+
+.bottom-stats{
+gap:18px;
+font-size:13px;
+}
+
+.modal-content{
+padding:20px;
+}
+
+.chip{
+font-size:13px;
+padding:6px 12px;
+}
+
+.exit-btn{
+font-size:14px;
+padding:12px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <div id="timeText">30</div>
+    <div id="speedLabel">MEDIUM</div>
+    <div class="settings-icon" onclick="openSettings()">⚙</div>
+</div>
+
+<div id="stimulus" class="stimulus" style="display:none;"></div>
+
+<div class="bottom-stats">
+    <div id="scoreText">Score 0</div>
+    <div id="missText">Miss 0</div>
+    <div id="impulseText">Impulse 0</div>
+</div>
+
+<!-- SETTINGS -->
+<div class="modal" id="settingsModal">
+<div class="modal-content">
+
+<h2>Drill Settings</h2>
+
+<p>Motion Speed</p>
+<div style="display:flex; gap:10px;">
+<div class="chip active" onclick="setSpeed('MEDIUM',800,this)">MEDIUM</div>
+<div class="chip" onclick="setSpeed('SLOW',1200,this)">SLOW</div>
+<div class="chip" onclick="setSpeed('FAST',500,this)">FAST</div>
+</div>
+
+<p style="margin-top:20px;">Duration</p>
+<div style="display:flex; gap:10px;">
+<div class="chip active" onclick="setTime(30,this)">30s</div>
+<div class="chip" onclick="setTime(20,this)">20s</div>
+<div class="chip" onclick="setTime(60,this)">60s</div>
+</div>
+
+<button class="exit-btn" onclick="exitDrill()">Exit Drill</button>
+
+</div>
+</div>
+
+<script>
+
+/* ================= VARIABLES ================= */
+
+let score = 0;
+let misses = 0;
+let impulseErrors = 0;
+let timeLeft = 30;
+let paused = false;
+let speedDelay = 800;
+let appearTime = 0;
+let reactions = [];
+
+const stimulus = document.getElementById("stimulus");
+const timeText = document.getElementById("timeText");
+const speedLabel = document.getElementById("speedLabel");
+const modal = document.getElementById("settingsModal");
+
+/* ================= TIMER ================= */
+
+let timer = setInterval(()=>{
+    if(!paused){
+        timeLeft--;
+        timeText.innerText = timeLeft;
+    }
+
+    if(timeLeft <= 0){
+        clearInterval(timer);
+        endGame();
+    }
+},1000);
+
+/* ================= FLASH ENGINE ================= */
+
+function flashLoop(){
+
+    if(paused || timeLeft<=0){
+        setTimeout(flashLoop,100);
+        return;
+    }
+
+    const randomDelay = speedDelay + Math.random()*500;
+
+    setTimeout(()=>{
+
+        if(paused || timeLeft<=0){
+            flashLoop();
+            return;
+        }
+
+        const isGo = Math.random() > 0.4;
+
+        stimulus.style.display = "flex";
+        stimulus.style.background = isGo ? "green" : "red";
+        stimulus.innerText = isGo ? "GO" : "NO GO";
+
+        appearTime = Date.now();
+
+        setTimeout(()=>{
+
+            if(stimulus.style.display === "flex" && isGo){
+                misses++;
+                updateStats();
+            }
+
+            stimulus.style.display = "none";
+            flashLoop();
+
+        },550);
+
+    },randomDelay);
+}
+
+flashLoop();
+
+/* ================= CLICK ================= */
+
+stimulus.onclick = function(){
+
+    if(paused || timeLeft<=0) return;
+
+    const reaction = Date.now() - appearTime;
+    const isGo = stimulus.innerText === "GO";
+
+    if(isGo){
+        score++;
+        reactions.push(reaction);
+    } else {
+        impulseErrors++;
+    }
+
+    updateStats();
+    stimulus.style.display="none";
+};
+
+/* ================= UPDATE ================= */
+
+function updateStats(){
+    document.getElementById("scoreText").innerText = "Score " + score;
+    document.getElementById("missText").innerText = "Miss " + misses;
+    document.getElementById("impulseText").innerText = "Impulse " + impulseErrors;
+}
+
+/* ================= SETTINGS ================= */
+
+function openSettings(){
+    paused = true;
+    modal.classList.add("active");
+}
+
+function setSpeed(label,delay,el){
+    speedDelay = delay;
+    speedLabel.innerText = label;
+
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    el.classList.add("active");
+}
+
+function setTime(sec,el){
+    timeLeft = sec;
+    timeText.innerText = sec;
+
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    el.classList.add("active");
+}
+
+function exitDrill(){
+    window.location.href="sports.html";
+}
+
+modal.onclick=function(e){
+    if(e.target===modal){
+        paused=false;
+        modal.classList.remove("active");
+    }
+};
+
+/* ================= END GAME ================= */
+
+function endGame(){
+
+    const avg = reactions.length===0?0:
+        Math.floor(reactions.reduce((a,b)=>a+b,0)/reactions.length);
+
+    const finalScore = score;
+
+    const params = new URLSearchParams(window.location.search);
+    const origin = params.get("origin") || "home";
+
+    window.location.href =
+        "reaction_result.html?hits="+score+
+        "&avg="+avg+
+        "&misses="+impulseErrors+
+        "&score="+finalScore+
+        "&game=gonogo"+
+        "&origin="+origin;
+}
+
+</script>
+
+</body>
+</html>

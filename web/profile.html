@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Profile</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+body {
+margin: 0;
+font-family: 'Segoe UI', sans-serif;
+background: #f4f6f9;
+transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark {
+background: #0f172a;
+color: #f1f5f9;
+}
+
+body.dark .profile-card {
+background: #1e293b;
+color: #f1f5f9;
+}
+
+body.dark .field label {
+color: #cbd5e1;
+}
+
+body.dark input,
+body.dark textarea {
+background: #334155;
+color: #f1f5f9;
+border: 1px solid #475569;
+}
+
+body.dark .back-btn {
+color: #cbd5e1;
+}
+
+body.dark .profile-header button,
+body.dark #saveBtn,
+body.dark .avatar-section button {
+background: #6366f1;
+}
+
+/* ================= LAYOUT ================= */
+
+.profile-wrapper {
+display: flex;
+justify-content: center;
+padding: 60px 20px;
+}
+
+.profile-card {
+width: 520px;
+background: white;
+border-radius: 18px;
+padding: 40px;
+box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+position: relative;
+transition: background 0.3s ease;
+}
+
+.back-btn {
+position: absolute;
+top: 25px;
+left: 25px;
+font-size: 18px;
+cursor: pointer;
+color: #555;
+transition: 0.3s;
+}
+
+.back-btn:hover {
+color: #4f46e5;
+}
+
+.profile-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 35px;
+}
+
+.profile-header h2 {
+margin: 0;
+font-weight: 600;
+}
+
+.profile-header button {
+background: #4f46e5;
+color: white;
+border: none;
+padding: 8px 18px;
+border-radius: 8px;
+cursor: pointer;
+font-weight: 500;
+}
+
+.avatar-section {
+text-align: center;
+margin-bottom: 30px;
+}
+
+.avatar-section img {
+width: 140px;
+height: 140px;
+border-radius: 50%;
+object-fit: cover;
+border: 4px solid #4f46e5;
+}
+
+.avatar-section button {
+margin-top: 12px;
+background: #6366f1;
+color: white;
+border: none;
+padding: 6px 14px;
+border-radius: 6px;
+cursor: pointer;
+}
+
+.field {
+margin-bottom: 20px;
+}
+
+.field label {
+font-size: 14px;
+color: #777;
+display: block;
+margin-bottom: 6px;
+}
+
+.field input,
+.field textarea {
+width: 100%;
+padding: 10px 14px;
+border-radius: 8px;
+border: 1px solid #ddd;
+font-size: 14px;
+transition: 0.2s;
+}
+
+.field input:focus,
+.field textarea:focus {
+outline: none;
+border-color: #4f46e5;
+}
+
+#saveBtn {
+background: #4f46e5;
+color: white;
+border: none;
+padding: 10px 18px;
+border-radius: 8px;
+cursor: pointer;
+margin-top: 10px;
+display: none;
+}
+
+#message {
+margin-top: 12px;
+font-size: 14px;
+}
+
+/* ================= TABLET ================= */
+
+@media (max-width:1024px){
+
+.profile-card{
+width:460px;
+padding:35px;
+}
+
+.avatar-section img{
+width:120px;
+height:120px;
+}
+
+.profile-header h2{
+font-size:22px;
+}
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width:768px){
+
+.profile-wrapper{
+padding:40px 15px;
+}
+
+.profile-card{
+width:100%;
+padding:30px 25px;
+}
+
+/* KEEP ROW LAYOUT */
+.profile-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.avatar-section img{
+width:110px;
+height:110px;
+}
+
+.profile-header button{
+padding:7px 16px;
+font-size:14px;
+}
+
+.field input,
+.field textarea{
+font-size:13px;
+padding:9px 12px;
+}
+
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width:480px){
+
+.profile-card{
+padding:25px 18px;
+}
+
+.avatar-section img{
+width:95px;
+height:95px;
+}
+
+.profile-header h2{
+font-size:20px;
+}
+
+.back-btn{
+top:18px;
+left:18px;
+font-size:16px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="profile-wrapper">
+
+<div class="profile-card">
+
+<div class="back-btn"
+onclick="window.location.href='home.html'">
+<i class="fa-solid fa-arrow-left"></i>
+</div>
+
+<div class="profile-header">
+<h2>My Profile</h2>
+<button id="editBtn">Edit</button>
+</div>
+
+<div class="avatar-section">
+<img id="profileImage" src="https://via.placeholder.com/150">
+<br>
+<button id="changePhotoBtn" style="display:none;">Change Photo</button>
+<input type="file" id="imageInput" hidden>
+</div>
+
+<div class="field">
+<label>Username</label>
+<input type="text" id="username" disabled>
+</div>
+
+<div class="field">
+<label>Bio</label>
+<textarea id="bio" rows="3" disabled></textarea>
+</div>
+
+<button id="saveBtn">Save Changes</button>
+
+<div id="message"></div>
+
+</div>
+
+</div>
+
+<script src="js/api.js"></script>
+
+<script>
+
+/* APPLY DARK MODE ON LOAD */
+document.addEventListener("DOMContentLoaded", function () {
+if (localStorage.getItem("darkMode") === "true") {
+document.body.classList.add("dark");
+}
+});
+
+/* ELEMENTS */
+
+const editBtn = document.getElementById("editBtn");
+const saveBtn = document.getElementById("saveBtn");
+const usernameInput = document.getElementById("username");
+const bioInput = document.getElementById("bio");
+const changePhotoBtn = document.getElementById("changePhotoBtn");
+const imageInput = document.getElementById("imageInput");
+const profileImage = document.getElementById("profileImage");
+const message = document.getElementById("message");
+
+let editMode = false;
+let selectedFile = null;
+
+/* LOAD PROFILE */
+
+const email = localStorage.getItem("userEmail");
+
+fetch(BASE_URL + "get_profile.php?email=" + email)
+.then(res => res.json())
+.then(data => {
+usernameInput.value = data.username || "";
+bioInput.value = data.bio || "";
+if (data.profile_image) {
+profileImage.src = data.profile_image + "?t=" + new Date().getTime();
+}
+});
+
+/* EDIT BUTTON */
+
+editBtn.addEventListener("click", () => {
+
+editMode = !editMode;
+
+usernameInput.disabled = !editMode;
+bioInput.disabled = !editMode;
+
+saveBtn.style.display = editMode ? "inline-block" : "none";
+changePhotoBtn.style.display = editMode ? "inline-block" : "none";
+
+editBtn.innerText = editMode ? "Cancel" : "Edit";
+});
+
+/* IMAGE PICK */
+
+changePhotoBtn.addEventListener("click", () => {
+imageInput.click();
+});
+
+imageInput.addEventListener("change", (e) => {
+selectedFile = e.target.files[0];
+profileImage.src = URL.createObjectURL(selectedFile);
+});
+
+/* SAVE PROFILE */
+
+saveBtn.addEventListener("click", () => {
+
+const formData = new FormData();
+formData.append("email", email);
+formData.append("name", usernameInput.value);
+formData.append("bio", bioInput.value);
+
+if (selectedFile) {
+formData.append("photo", selectedFile);
+}
+
+fetch(BASE_URL + "save_profile.php", {
+method: "POST",
+body: formData
+})
+.then(res => res.json())
+.then(data => {
+
+if (data.status === "success") {
+
+message.innerText = "Profile updated successfully ✓";
+
+editMode = false;
+usernameInput.disabled = true;
+bioInput.disabled = true;
+
+saveBtn.style.display = "none";
+changePhotoBtn.style.display = "none";
+editBtn.innerText = "Edit";
+
+} else {
+message.innerText = "Update failed ❌";
+}
+
+});
+
+});
+
+</script>
+
+</body>
+</html>

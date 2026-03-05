@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+/* ===== EXISTING STYLES ===== */
+
+.sidebar p{
+font-size:11px;
+letter-spacing:1.5px;
+text-transform:uppercase;
+opacity:0.6;
+margin-top:-8px;
+margin-bottom:20px;
+}
+
+.sidebar .logo{
+margin-bottom:6px;
+}
+
+/* ===== NEW SIDEBAR BRAND STYLE ===== */
+
+.sidebar-brand{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:6px;
+}
+
+.sidebar-brand img{
+width:40px;
+height:40px;
+object-fit:contain;
+}
+
+.sidebar p::after{
+content:"";
+display:block;
+width:40px;
+height:2px;
+background:rgba(255,255,255,0.2);
+margin-top:10px;
+}
+
+.top-actions{
+display:flex;
+align-items:center;
+gap:18px;
+}
+
+.notification,
+.settings-icon{
+position:relative;
+cursor:pointer;
+font-size:18px;
+color:#555;
+transition:0.3s;
+}
+
+.notification:hover,
+.settings-icon:hover{
+color:#4f46e5;
+transform:scale(1.1);
+}
+
+.profile-circle{
+width:42px;
+height:42px;
+border-radius:50%;
+background:#6366f1;
+color:white;
+font-weight:bold;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+overflow:hidden;
+transition:0.3s;
+}
+
+.profile-circle:hover{
+transform:scale(1.05);
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+.badge{
+position:absolute;
+top:-6px;
+right:-8px;
+background:red;
+color:white;
+font-size:10px;
+padding:3px 6px;
+border-radius:12px;
+}
+
+.session-card{
+background:linear-gradient(135deg,#4f46e5,#6366f1);
+color:white;
+padding:30px;
+border-radius:18px;
+margin-top:25px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.session-card button{
+background:white;
+color:#4f46e5;
+border:none;
+padding:10px 18px;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+}
+
+.features{
+margin-top:35px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+}
+
+.feature-card{
+background:white;
+padding:25px;
+border-radius:16px;
+box-shadow:0 5px 18px rgba(0,0,0,0.05);
+cursor:pointer;
+transition:0.3s;
+}
+
+.feature-card:hover{
+transform:translateY(-5px);
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.feature-card i{
+font-size:22px;
+margin-bottom:12px;
+color:#4f46e5;
+}
+
+.layout{
+display:flex;
+min-height:100vh;
+}
+
+.sidebar{
+width:240px;
+background:#0f172a;
+min-height:100vh;
+color:white;
+padding:20px;
+position:relative;
+}
+
+.main{
+flex:1;
+background:#f3f4f6;
+padding:25px;
+}
+
+/* ===== HAMBURGER ===== */
+
+.menu-btn{
+display:none;
+font-size:22px;
+cursor:pointer;
+margin-right:10px;
+}
+
+/* ===== SIDEBAR CLOSE ===== */
+
+.close-menu{
+display:none;
+position:absolute;
+top:20px;
+right:20px;
+font-size:22px;
+cursor:pointer;
+}
+
+/* ===== MOBILE FIX ===== */
+
+@media(max-width:768px){
+
+.menu-btn{
+display:block;
+}
+
+.close-menu{
+display:block;
+color:white;
+}
+
+.sidebar{
+position:fixed;
+top:0;
+left:0;
+height:100%;
+width:240px;
+z-index:999;
+transform:translateX(-100%);
+transition:0.3s;
+}
+
+.sidebar.active{
+transform:translateX(0);
+}
+
+.layout{
+flex-direction:column;
+}
+
+.main{
+padding:20px;
+width:100%;
+}
+
+.session-card{
+flex-direction:row;
+align-items:center;
+justify-content:space-between;
+}
+
+.session-card h2{
+font-size:18px;
+}
+
+.session-card i{
+font-size:26px;
+}
+
+.features{
+grid-template-columns:1fr;
+}
+
+.image-logo{
+width:56px;
+height:56px;
+object-fit:contain;
+}
+
+@media(max-width:768px){
+
+.image-logo{
+width:40px;
+height:40px;
+}
+
+}
+
+.sidebar-brand{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:6px;
+}
+
+}
+
+/* ===== NOTIFICATION PANEL ===== */
+
+.notification-panel{
+position:absolute;
+top:40px;
+right:0;
+width:280px;
+background:white;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+padding:10px 0;
+display:none;
+z-index:1000;
+}
+
+.notification-panel.active{
+display:block;
+}
+
+.notification-item{
+padding:12px 18px;
+font-size:14px;
+color:#333;
+border-bottom:1px solid #eee;
+display:flex;
+gap:10px;
+align-items:flex-start;
+}
+
+.notification-item:last-child{
+border-bottom:none;
+}
+
+.notification-item i{
+color:#6366f1;
+margin-top:2px;
+}
+
+.notification-item:hover{
+background:#f5f7fb;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+
+<div class="sidebar" id="sidebar">
+
+<i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
+
+<div class="sidebar-brand">
+<img src="https://res.cloudinary.com/dmvlmpm0v/image/upload/v1772530064/eye-logo-web_xnkl2g.png"/>
+<div>
+  <h2 class="logo">SVT</h2>
+  <p>SPORTS VISION TRAINING</p>
+</div> 
+</div>
+
+<ul>
+
+<li class="active">
+<i class="fa-solid fa-home"></i> Home
+</li>
+
+<li onclick="navigate('exercise.html')">
+<i class="fa-solid fa-dumbbell"></i> Exercise
+</li>
+
+<li onclick="navigate('sports.html')">
+<i class="fa-solid fa-futbol"></i> Sports
+</li>
+
+<li onclick="navigate('stats.html')">
+<i class="fa-solid fa-chart-line"></i> Stats
+</li>
+
+</ul>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+<div class="welcome">
+
+<i class="fa-solid fa-bars menu-btn" onclick="toggleMenu()"></i>
+
+<h3>
+Welcome back,
+<span id="usernameText">User</span>
+</h3>
+
+<p>Level 1 • Vision Training</p>
+
+</div>
+
+<div class="top-actions">
+
+<div class="notification" onclick="toggleNotifications()">
+
+<i class="fa-solid fa-bell"></i>
+<span class="badge" id="notifBadge"></span>
+
+<div class="notification-panel" id="notificationPanel">
+
+<div class="notification-item">
+<i class="fa-solid fa-trophy"></i>
+<span>🏆 New personal best! Your reaction time improved by 32 ms in the last session.</span>
+</div>
+
+<div class="notification-item">
+<i class="fa-solid fa-fire"></i>
+<span>🔥 Training streak: You've completed drills for 3 consecutive days. Keep it going!</span>
+</div>
+
+<div class="notification-item">
+<i class="fa-solid fa-chart-line"></i>
+<span>📊 Your average reaction speed improved this week. View detailed stats.</span>
+</div>
+
+<div class="notification-item">
+<i class="fa-solid fa-bullseye"></i>
+<span>🎯 Daily drill reminder: Complete today’s 5-minute vision training session.</span>
+</div>
+
+</div>
+
+</div>
+
+<div class="settings-icon"
+onclick="window.location.href='settings.html'">
+<i class="fa-solid fa-gear"></i>
+</div>
+
+<div class="profile-circle"
+onclick="window.location.href='profile.html'">
+
+<img id="profileImg"
+style="display:none;width:100%;height:100%;object-fit:cover;">
+
+<span id="profileInitial">U</span>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- SESSION -->
+
+<div class="session-card">
+
+<div>
+<h2>Start Daily Session</h2>
+<p>Estimated duration: 5 minutes</p>
+
+<button onclick="startSession('reaction_jump.html')">
+Start Session
+</button>
+</div>
+
+<div>
+<i class="fa-solid fa-play fa-2x"></i>
+</div>
+
+</div>
+
+<!-- FEATURES -->
+
+<div class="features">
+
+<div class="feature-card"
+onclick="startSession('colortapgame.html')">
+
+<i class="fa-solid fa-palette"></i>
+
+<h4>Color Tap</h4>
+
+<p>Improve reaction speed</p>
+
+</div>
+
+<div class="feature-card"
+onclick="startSession('direction_swipe_game.html')">
+
+<i class="fa-solid fa-arrows-left-right"></i>
+
+<h4>Direction Swipe</h4>
+
+<p>Enhance coordination</p>
+
+</div>
+
+<div class="feature-card"
+onclick="navigate('stats.html')">
+
+<i class="fa-solid fa-chart-line"></i>
+
+<h4>Performance Stats</h4>
+
+<p>Track your growth</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/dashboard.js"></script>
+
+<script>
+
+function toggleMenu(){
+document.getElementById("sidebar").classList.toggle("active");
+}
+
+document.addEventListener("DOMContentLoaded",function(){
+if(localStorage.getItem("darkMode")==="true"){
+document.body.classList.add("dark");
+}
+
+document.getElementById("notifBadge").innerText = "4"
+
+});
+
+function toggleNotifications(){
+
+const panel = document.getElementById("notificationPanel")
+
+panel.classList.toggle("active")
+
+}
+
+document.addEventListener("click",function(e){
+
+const bell = document.querySelector(".notification")
+const panel = document.getElementById("notificationPanel")
+
+if(!bell.contains(e.target)){
+panel.classList.remove("active")
+}
+
+})
+
+</script>
+
+</body>
+</html>

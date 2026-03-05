@@ -1,0 +1,113 @@
+body {
+    margin: 0;
+    background: #f4f6f9;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.profile-container {
+    display: flex;
+    justify-content: center;
+    padding: 50px;
+}
+
+.profile-card {
+    background: white;
+    width: 450px;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.avatar-section {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.avatar-section img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.field {
+    margin-bottom: 15px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: gray;
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #4f46e5;
+    color: white;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
+
+#message {
+    margin-top: 10px;
+}
+
+/* ================= GLOBAL DARK THEME ================= */
+
+body.dark {
+    background: #0f172a !important;
+    color: #f1f5f9 !important;
+}
+
+/* Containers */
+body.dark .container,
+body.dark .settings-wrapper,
+body.dark .profile-card,
+body.dark .session-card,
+body.dark .feature-card {
+    background: #1e293b !important;
+    color: #f1f5f9 !important;
+}
+
+/* Inputs */
+body.dark input,
+body.dark textarea {
+    background: #334155 !important;
+    color: #f1f5f9 !important;
+    border-color: #475569 !important;
+}
+
+/* Sidebar */
+body.dark .sidebar {
+    background: #111827 !important;
+}
+
+/* Cards */
+body.dark .feature-card {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* Buttons */
+body.dark button {
+    opacity: 0.95;
+}

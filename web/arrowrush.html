@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Arrow Rush</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    background:black;
+    color:white;
+    font-family:'Segoe UI',sans-serif;
+    overflow:hidden;
+}
+
+/* ---------- TOP BAR ---------- */
+
+.topbar{
+    position:absolute;
+    top:0;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    padding:20px 30px;
+    box-sizing:border-box;
+    font-size:18px;
+    align-items:center;
+    z-index:1000;
+}
+
+.settings-icon{
+    cursor:pointer;
+    font-size:22px;
+    user-select:none;
+}
+
+/* ---------- CENTER ARROW ---------- */
+
+.center{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+.arrow-card{
+    width:220px;
+    height:220px;
+    background:white;
+    color:black;
+    border-radius:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:90px;
+    font-weight:bold;
+}
+
+/* ---------- FOOTER ---------- */
+
+.footer{
+    position:absolute;
+    bottom:20px;
+    width:100%;
+    text-align:center;
+}
+
+/* ---------- SETTINGS MODAL ---------- */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:2000;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.modal-box{
+    background:#d9cdc3;
+    padding:40px;
+    border-radius:30px;
+    width:380px;
+    color:#2c2c2c;
+}
+
+.chip{
+    padding:8px 18px;
+    border-radius:12px;
+    border:2px solid #777;
+    cursor:pointer;
+    margin-right:10px;
+}
+
+.chip.active{
+    background:#f4c7a1;
+    border-color:#f4c7a1;
+}
+
+.exit-btn{
+    margin-top:30px;
+    width:100%;
+    padding:18px;
+    border:none;
+    border-radius:40px;
+    background:red;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+/* ---------- PERFORMANCE REPORT ---------- */
+
+.report-overlay{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#1e293b,#0f172a);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:5000;
+}
+
+.report-card{
+    background:#f1f5f9;
+    padding:40px;
+    border-radius:30px;
+    width:400px;
+    color:#0f172a;
+}
+
+.report-card h2{
+    margin-top:0;
+    text-align:center;
+}
+
+.report-row{
+    display:flex;
+    justify-content:space-between;
+    margin:12px 0;
+    font-size:16px;
+}
+
+.primary-btn{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    margin-top:20px;
+    background:linear-gradient(to right,#6366f1,#4f46e5);
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.outline-btn{
+    width:100%;
+    padding:15px;
+    border-radius:12px;
+    margin-top:12px;
+    background:transparent;
+    border:2px solid #4f46e5;
+    color:#4f46e5;
+    font-size:16px;
+    cursor:pointer;
+}
+
+/* ============================ */
+/* TABLET RESPONSIVE (1024px) */
+/* ============================ */
+
+@media (max-width:1024px){
+
+.topbar{
+font-size:16px;
+padding:18px 25px;
+}
+
+.arrow-card{
+width:190px;
+height:190px;
+font-size:80px;
+}
+
+.modal-box{
+width:320px;
+padding:35px;
+}
+
+.report-card{
+width:340px;
+}
+
+}
+
+/* ============================ */
+/* MOBILE RESPONSIVE (768px) */
+/* ============================ */
+
+@media (max-width:768px){
+
+.topbar{
+padding:15px 18px;
+font-size:15px;
+}
+
+.settings-icon{
+font-size:20px;
+}
+
+.arrow-card{
+width:150px;
+height:150px;
+font-size:65px;
+border-radius:22px;
+}
+
+.footer{
+font-size:14px;
+bottom:15px;
+}
+
+.modal-box{
+width:85%;
+padding:30px;
+}
+
+.chip{
+padding:6px 14px;
+margin-bottom:8px;
+display:inline-block;
+}
+
+.exit-btn{
+padding:14px;
+font-size:15px;
+}
+
+.report-card{
+width:85%;
+padding:30px;
+}
+
+.report-row{
+font-size:15px;
+}
+
+.primary-btn,
+.outline-btn{
+padding:13px;
+font-size:15px;
+}
+
+}
+
+/* ============================ */
+/* SMALL MOBILE (480px) */
+/* ============================ */
+
+@media (max-width:480px){
+
+.topbar{
+font-size:14px;
+}
+
+.arrow-card{
+width:120px;
+height:120px;
+font-size:55px;
+border-radius:20px;
+}
+
+.footer{
+font-size:13px;
+}
+
+.modal-box{
+padding:25px;
+}
+
+.report-card{
+padding:25px;
+}
+
+.primary-btn,
+.outline-btn{
+font-size:14px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <div id="time">60</div>
+    <div id="speedLabel">MEDIUM</div>
+    <div class="settings-icon" onclick="openSettings()">⚙</div>
+</div>
+
+<div class="center" id="arrowContainer"></div>
+
+<div class="footer">
+    Score <span id="score">0</span> |
+    Miss <span id="miss">0</span>
+</div>
+
+<!-- SETTINGS -->
+<div id="settingsModal" class="modal">
+<div class="modal-box">
+    <h2>Drill Settings</h2>
+
+    <p><b>Motion Speed</b></p>
+    <div id="speedGroup">
+        <span class="chip" onclick="setSpeed('SLOW',this)">SLOW</span>
+        <span class="chip active" onclick="setSpeed('MEDIUM',this)">MEDIUM</span>
+        <span class="chip" onclick="setSpeed('FAST',this)">FAST</span>
+    </div>
+
+    <p style="margin-top:20px;"><b>Session Time</b></p>
+    <div id="timeGroup">
+        <span class="chip" onclick="setTime(10,this)">10s</span>
+        <span class="chip" onclick="setTime(30,this)">30s</span>
+        <span class="chip active" onclick="setTime(60,this)">1m</span>
+        <span class="chip" onclick="setTime(300,this)">5m</span>
+    </div>
+
+    <button class="exit-btn" onclick="exitDrill()">Exit Drill</button>
+</div>
+</div>
+
+<script>
+
+let sessionSeconds=60
+let timeLeft=60
+let speed="MEDIUM"
+let paused=false
+let score=0
+let misses=0
+let reactionTotal=0
+let showArrow=false
+let lastSpawn=0
+let gameOver=false
+let timerInterval
+let spawnTimeout
+
+const arrows=["⬅","➡","⬆","⬇"]
+
+function startTimer(){
+timerInterval=setInterval(()=>{
+if(!paused && !gameOver){
+timeLeft--
+document.getElementById("time").innerText=timeLeft
+if(timeLeft<=0){
+clearInterval(timerInterval)
+endGame()
+}
+}
+},1000)
+}
+
+function spawnDelay(){
+return speed==="SLOW"?1400:
+speed==="MEDIUM"?1000:700
+}
+
+function spawnArrow(){
+if(gameOver) return
+
+spawnTimeout=setTimeout(()=>{
+if(paused || gameOver){ spawnArrow(); return }
+
+if(showArrow){ misses++ }
+
+const arrow=arrows[Math.floor(Math.random()*4)]
+lastSpawn=Date.now()
+showArrow=true
+
+document.getElementById("arrowContainer").innerHTML=
+`<div class="arrow-card">${arrow}</div>`
+
+spawnArrow()
+
+},spawnDelay())
+}
+
+document.body.addEventListener("click",()=>{
+if(paused||!showArrow||gameOver) return
+let rt=Date.now()-lastSpawn
+reactionTotal+=rt
+score++
+showArrow=false
+document.getElementById("arrowContainer").innerHTML=""
+updateStats()
+})
+
+function updateStats(){
+document.getElementById("score").innerText=score
+document.getElementById("miss").innerText=misses
+}
+
+function openSettings(){
+paused=true
+document.getElementById("settingsModal").classList.add("active")
+}
+
+document.getElementById("settingsModal").onclick=function(e){
+if(e.target===this){
+paused=false
+this.classList.remove("active")
+}
+}
+
+function setSpeed(v,el){
+speed=v
+document.getElementById("speedLabel").innerText=v
+document.querySelectorAll("#speedGroup .chip").forEach(c=>c.classList.remove("active"))
+el.classList.add("active")
+}
+
+function setTime(t,el){
+sessionSeconds=t
+timeLeft=t
+document.getElementById("time").innerText=t
+document.querySelectorAll("#timeGroup .chip").forEach(c=>c.classList.remove("active"))
+el.classList.add("active")
+}
+
+function exitDrill(){
+window.location.href="sports.html"
+}
+
+function goHome(){
+window.location.href="sports.html"
+}
+
+function endGame(){
+gameOver=true
+clearTimeout(spawnTimeout)
+
+let avg=score===0?0:Math.floor(reactionTotal/score)
+let finalScore=score*120 - misses*40 - Math.floor(avg/5)
+
+const overlay=document.createElement("div")
+overlay.className="report-overlay"
+overlay.innerHTML=`
+<div class="report-card">
+<h2>Performance Report 🎯</h2>
+
+<div class="report-row"><span>Hits</span><span>${score}</span></div>
+<div class="report-row"><span>Misses</span><span>${misses}</span></div>
+<div class="report-row"><span>Avg Reaction</span><span>${avg} ms</span></div>
+<div class="report-row"><span>Score</span><span>${finalScore}</span></div>
+
+<button class="primary-btn" onclick="location.reload()">Start Again</button>
+<button class="outline-btn" onclick="goHome()">Back To Home</button>
+</div>
+`
+document.body.appendChild(overlay)
+}
+
+startTimer()
+spawnArrow()
+
+</script>
+
+</body>
+</html>

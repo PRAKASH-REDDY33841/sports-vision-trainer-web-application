@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Moving Target Tap</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    background:black;
+    overflow:hidden;
+    color:white;
+    font-family:'Segoe UI',sans-serif;
+    cursor:default;
+}
+
+.topbar{
+    position:absolute;
+    top:0;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    padding:20px 30px;
+    box-sizing:border-box;
+    font-size:18px;
+    align-items:center;
+}
+
+.settings-icon{
+    cursor:pointer;
+    font-size:22px;
+}
+
+.target{
+    position:absolute;
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:red;
+    cursor:pointer;
+}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.modal-content{
+    background:#d7ccc8;
+    color:black;
+    width:380px;
+    padding:30px;
+    border-radius:25px;
+}
+
+.section-title{
+    margin-top:20px;
+    margin-bottom:10px;
+}
+
+.chip-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.chip{
+    padding:8px 18px;
+    border-radius:12px;
+    border:2px solid #888;
+    cursor:pointer;
+}
+
+.chip.active{
+    background:#f4c7a1;
+    border-color:#f4c7a1;
+}
+
+.exit-btn{
+    margin-top:25px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:30px;
+    background:red;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+/* ============================ */
+/* TABLET RESPONSIVE */
+/* ============================ */
+
+@media (max-width:1024px){
+
+.topbar{
+padding:18px 24px;
+font-size:16px;
+}
+
+.settings-icon{
+font-size:20px;
+}
+
+.target{
+width:56px;
+height:56px;
+}
+
+.modal-content{
+width:340px;
+padding:26px;
+}
+
+}
+
+/* ============================ */
+/* MOBILE RESPONSIVE */
+/* ============================ */
+
+@media (max-width:768px){
+
+.topbar{
+padding:14px 18px;
+font-size:15px;
+}
+
+.settings-icon{
+font-size:18px;
+}
+
+.target{
+width:48px;
+height:48px;
+}
+
+.modal-content{
+width:85%;
+padding:24px;
+}
+
+.chip{
+padding:7px 14px;
+font-size:14px;
+}
+
+.exit-btn{
+padding:13px;
+font-size:15px;
+}
+
+}
+
+/* ============================ */
+/* SMALL MOBILE */
+/* ============================ */
+
+@media (max-width:480px){
+
+.topbar{
+padding:12px 14px;
+font-size:14px;
+}
+
+.settings-icon{
+font-size:16px;
+}
+
+.target{
+width:40px;
+height:40px;
+}
+
+.modal-content{
+padding:20px;
+}
+
+.chip{
+font-size:13px;
+padding:6px 12px;
+}
+
+.exit-btn{
+font-size:14px;
+padding:12px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <div id="timeText">30</div>
+    <div id="speedLabel">MEDIUM</div>
+    <div class="settings-icon" onclick="openSettings()">⚙</div>
+</div>
+
+<div id="target" class="target"></div>
+
+<div class="modal" id="settingsModal">
+<div class="modal-content">
+
+<h2>Drill Settings</h2>
+
+<div class="section-title">Motion Speed</div>
+<div class="chip-row">
+<div class="chip" onclick="setSpeed('SLOW',2600,this)">SLOW</div>
+<div class="chip active" onclick="setSpeed('MEDIUM',1700,this)">MEDIUM</div>
+<div class="chip" onclick="setSpeed('FAST',1000,this)">FAST</div>
+</div>
+
+<div class="section-title">Session Time</div>
+<div class="chip-row">
+<div class="chip" onclick="setTime(10,this)">10s</div>
+<div class="chip active" onclick="setTime(30,this)">30s</div>
+<div class="chip" onclick="setTime(60,this)">1m</div>
+<div class="chip" onclick="setTime(300,this)">5m</div>
+</div>
+
+<button class="exit-btn" onclick="exitDrill()">Exit Drill</button>
+
+</div>
+</div>
+
+<script>
+
+/* VARIABLES */
+let score = 0;
+let timeLeft = 30;
+let reactions = [];
+let paused = false;
+let duration = 1700;
+let appearTime = Date.now();
+
+const target = document.getElementById("target");
+const timeText = document.getElementById("timeText");
+const speedLabel = document.getElementById("speedLabel");
+const modal = document.getElementById("settingsModal");
+
+/* TIMER */
+let timer = setInterval(()=>{
+if(!paused){
+timeLeft--;
+timeText.innerText = timeLeft;
+}
+
+if(timeLeft <= 0){
+clearInterval(timer);
+endGame();
+}
+},1000);
+
+/* ZIGZAG ANIMATION */
+let startTime = Date.now();
+
+function animate(){
+if(!paused){
+
+const elapsed = (Date.now() - startTime) % duration;
+const progress = elapsed / duration;
+
+const screenWidth = window.innerWidth;
+const screenHeight = window.innerHeight;
+
+const margin = 80;
+const usableWidth = screenWidth - margin * 2;
+
+const centerY = screenHeight / 2;
+const amplitude = screenHeight * 0.25;
+
+const x = margin + progress * usableWidth;
+const y = centerY + amplitude * Math.sin(progress * 6.28);
+
+target.style.left = x + "px";
+target.style.top = y + "px";
+}
+requestAnimationFrame(animate);
+}
+animate();
+
+/* CLICK */
+target.addEventListener("click", function(e){
+if(paused) return;
+
+const reaction = Date.now() - appearTime;
+score++;
+reactions.push(reaction);
+
+appearTime = Date.now();
+
+e.stopPropagation();
+});
+
+/* SETTINGS */
+function openSettings(){
+paused = true;
+modal.classList.add("active");
+}
+
+function closeSettings(){
+paused = false;
+startTime = Date.now();
+modal.classList.remove("active");
+}
+
+modal.onclick = function(e){
+if(e.target === modal) closeSettings();
+};
+
+function setSpeed(label, dur, el){
+duration = dur;
+speedLabel.innerText = label;
+document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+el.classList.add("active");
+startTime = Date.now();
+}
+
+function setTime(sec, el){
+timeLeft = sec;
+timeText.innerText = sec;
+document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+el.classList.add("active");
+}
+
+function exitDrill(){
+window.location.href="sports.html";
+}
+
+function getOrigin(){
+    const params = new URLSearchParams(window.location.search);
+    return params.get("origin") || "home";
+}
+
+/* END GAME */
+function endGame(){
+
+const avg = reactions.length === 0 ? 0 :
+Math.floor(reactions.reduce((a,b)=>a+b,0)/reactions.length);
+
+const finalScore = score * 10;
+
+window.location.href =
+"reaction_result.html?hits="+score+
+"&avg="+avg+
+"&misses=0"+
+"&score="+finalScore+
+"&game=moving" +
+"&origin=" + getOrigin();
+}
+
+</script>
+
+</body>
+</html>

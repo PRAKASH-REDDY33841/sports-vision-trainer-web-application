@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Direction Swipe Game</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    background:black;
+    color:white;
+    font-family:'Segoe UI',sans-serif;
+    overflow:hidden;
+}
+
+/* ===== TOP BAR ===== */
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    padding:18px 22px;
+    font-weight:500;
+    font-size:16px;
+}
+
+.settings-icon{
+    cursor:pointer;
+}
+
+/* ===== GRID ===== */
+
+.grid{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
+}
+
+.row{
+    display:flex;
+    gap:8px;
+}
+
+.cell{
+    width:32px;
+    height:32px;
+    border-radius:6px;
+    background:white;
+    cursor:pointer;
+}
+
+.cell.active{
+    background:red;
+}
+
+/* ===== SETTINGS MODAL ===== */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.75);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.modal-content{
+    background:#d7ccc8;
+    width:460px;
+    max-width:92%;
+    padding:40px;
+    border-radius:30px;
+    color:#222;
+    box-sizing:border-box;
+}
+
+/* Title */
+.modal-content h2{
+    margin-top:0;
+    font-size:28px;
+    font-weight:700;
+}
+
+/* Section Title */
+.section-title{
+    margin-top:28px;
+    margin-bottom:14px;
+    font-size:18px;
+    font-weight:600;
+}
+
+/* Chip Row */
+.chip-row{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+}
+
+/* Chip */
+.chip{
+    padding:10px 22px;
+    border-radius:14px;
+    border:2px solid #8e8e8e;
+    background:transparent;
+    cursor:pointer;
+    font-weight:500;
+    transition:0.2s;
+}
+
+.chip.active{
+    background:#f4c7a1;
+    border-color:#f4c7a1;
+}
+
+/* Exit Button */
+.exit-btn{
+    margin-top:40px;
+    width:100%;
+    padding:18px;
+    border:none;
+    border-radius:50px;
+    background:#e50914;
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+/* ============================ */
+/* TABLET RESPONSIVE */
+/* ============================ */
+
+@media (max-width:1024px){
+
+.topbar{
+font-size:15px;
+padding:16px 20px;
+}
+
+.grid{
+margin-top:20px;
+}
+
+.cell{
+width:28px;
+height:28px;
+}
+
+.modal-content{
+width:380px;
+padding:32px;
+}
+
+}
+
+/* ============================ */
+/* MOBILE RESPONSIVE */
+/* ============================ */
+
+@media (max-width:768px){
+
+.topbar{
+font-size:15px;
+padding:15px 18px;
+}
+
+.settings-icon{
+font-size:20px;
+}
+
+/* CENTER GRID */
+
+.grid{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+margin-top:0;
+}
+
+/* GRID SCALE */
+
+.cell{
+width:24px;
+height:24px;
+border-radius:5px;
+}
+
+.row{
+gap:6px;
+}
+
+.grid{
+gap:6px;
+}
+
+.modal-content{
+width:85%;
+padding:28px;
+}
+
+.chip{
+padding:8px 16px;
+}
+
+.exit-btn{
+padding:15px;
+font-size:16px;
+}
+
+}
+
+/* ============================ */
+/* SMALL MOBILE */
+/* ============================ */
+
+@media (max-width:480px){
+
+.topbar{
+font-size:14px;
+}
+
+.cell{
+width:20px;
+height:20px;
+}
+
+.row{
+gap:5px;
+}
+
+.grid{
+gap:5px;
+}
+
+.modal-content{
+padding:24px;
+}
+
+.chip{
+font-size:13px;
+padding:7px 14px;
+}
+
+.exit-btn{
+font-size:15px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <div>TIME <span id="timeLeft">30</span></div>
+    <div id="motionLabel">MEDIUM</div>
+    <div class="settings-icon" onclick="openSettings()">⚙</div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal" id="settingsModal">
+    <div class="modal-content">
+
+        <h2>Drill Settings</h2>
+
+        <div class="section-title">Motion Speed</div>
+        <div class="chip-row">
+            <div class="chip" onclick="setSpeed('SLOW',2200,this)">SLOW</div>
+            <div class="chip active" onclick="setSpeed('MEDIUM',1700,this)">MEDIUM</div>
+            <div class="chip" onclick="setSpeed('FAST',1100,this)">FAST</div>
+        </div>
+
+        <div class="section-title">Session Time</div>
+        <div class="chip-row">
+            <div class="chip" onclick="setDuration(10,this)">10s</div>
+            <div class="chip active" onclick="setDuration(30,this)">30s</div>
+            <div class="chip" onclick="setDuration(60,this)">1m</div>
+            <div class="chip" onclick="setDuration(300,this)">5m</div>
+        </div>
+
+        <button class="exit-btn" onclick="exitDrill()">Exit Drill</button>
+
+    </div>
+</div>
+
+<script>
+
+/* ===== STATE ===== */
+
+let sessionSeconds = 30;
+let timeLeft = 30;
+let highlightDuration = 1700;
+
+let taps = 0;
+let misses = 0;
+let reactionTotal = 0;
+let lastSpawnTime = 0;
+
+let activeIndex = -1;
+let paused = false;
+
+const rows = 8;
+const cols = 10;
+const total = rows * cols;
+
+const grid = document.getElementById("grid");
+const timeText = document.getElementById("timeLeft");
+const motionText = document.getElementById("motionLabel");
+const modal = document.getElementById("settingsModal");
+
+/* ===== BUILD GRID ===== */
+
+function buildGrid(){
+    grid.innerHTML="";
+    for(let r=0;r<rows;r++){
+        const row=document.createElement("div");
+        row.className="row";
+        for(let c=0;c<cols;c++){
+            const cell=document.createElement("div");
+            cell.className="cell";
+            cell.dataset.index=r*cols+c;
+            cell.onclick=cellClick;
+            row.appendChild(cell);
+        }
+        grid.appendChild(row);
+    }
+}
+
+buildGrid();
+
+/* ===== TIMER ===== */
+
+let timer=setInterval(()=>{
+    if(!paused){
+        timeLeft--;
+        timeText.innerText=timeLeft;
+    }
+    if(timeLeft<=0){
+        clearInterval(timer);
+        showResult();
+    }
+},1000);
+
+/* ===== RANDOM ENGINE ===== */
+
+async function engine(){
+    while(timeLeft>0){
+        if(paused){
+            await sleep(200);
+            continue;
+        }
+
+        activateRandom();
+        await sleep(highlightDuration);
+
+        if(activeIndex!==-1){
+            misses++;
+            deactivate();
+        }
+    }
+}
+
+function activateRandom(){
+    deactivate();
+    activeIndex=Math.floor(Math.random()*total);
+    const cell=document.querySelector(`[data-index='${activeIndex}']`);
+    if(cell) cell.classList.add("active");
+    lastSpawnTime=Date.now();
+}
+
+function deactivate(){
+    const active=document.querySelector(".cell.active");
+    if(active) active.classList.remove("active");
+    activeIndex=-1;
+}
+
+function cellClick(e){
+    if(paused) return;
+
+    const index=parseInt(e.target.dataset.index);
+
+    if(index===activeIndex){
+        taps++;
+        reactionTotal+=Date.now()-lastSpawnTime;
+        deactivate();
+    } else{
+        misses++;
+    }
+}
+
+/* ===== SETTINGS ===== */
+
+function openSettings(){
+    paused=true;
+    modal.classList.add("active");
+}
+
+function closeSettings(){
+    paused=false;
+    modal.classList.remove("active");
+}
+
+modal.onclick=function(e){
+    if(e.target===modal){
+        closeSettings();
+    }
+};
+
+function setSpeed(label,duration,el){
+    highlightDuration=duration;
+    motionText.innerText=label;
+    activateChip(el);
+}
+
+function setDuration(sec,el){
+    sessionSeconds=sec;
+    timeLeft=sec;
+    timeText.innerText=sec;
+    activateChip(el);
+}
+
+function activateChip(el){
+    el.parentElement.querySelectorAll(".chip")
+        .forEach(c=>c.classList.remove("active"));
+    el.classList.add("active");
+}
+
+function exitDrill(){
+    window.location.href="home.html";
+}
+
+/* ===== RESULT ===== */
+
+function showResult(){
+    const avg=taps===0?0:Math.floor(reactionTotal/taps);
+    const score=taps*110 - misses*40 - Math.floor(avg/5);
+
+    window.location.href =
+        "reaction_result.html?hits="+taps+
+        "&avg="+avg+
+        "&misses="+misses+
+        "&score="+score+
+        "&game=direction_swipe_game";
+}
+
+function sleep(ms){
+    return new Promise(res=>setTimeout(res,ms));
+}
+
+engine();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Reaction Jump Game</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+margin:0;
+background:black;
+overflow:hidden;
+color:white;
+font-family:'Segoe UI',sans-serif;
+}
+
+/* ================= TOP BAR ================= */
+
+.topbar{
+position:absolute;
+top:0;
+width:100%;
+display:flex;
+justify-content:space-between;
+padding:20px 30px;
+box-sizing:border-box;
+font-size:18px;
+align-items:center;
+}
+
+.settings-icon{
+cursor:pointer;
+font-size:22px;
+}
+
+/* ================= TARGET ================= */
+
+.target{
+position:absolute;
+width:60px;
+height:60px;
+border-radius:50%;
+background:white;
+cursor:pointer;
+}
+
+/* ================= SETTINGS MODAL ================= */
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.6);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+.modal.active{
+display:flex;
+}
+
+.modal-content{
+background:#d7ccc8;
+color:black;
+width:380px;
+padding:30px;
+border-radius:25px;
+}
+
+.modal h2{
+margin-top:0;
+}
+
+.section-title{
+margin-top:20px;
+margin-bottom:10px;
+font-weight:500;
+}
+
+.chip-row{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.chip{
+padding:8px 18px;
+border-radius:12px;
+border:2px solid #888;
+cursor:pointer;
+background:transparent;
+}
+
+.chip.active{
+background:#f4c7a1;
+border-color:#f4c7a1;
+}
+
+.exit-btn{
+margin-top:25px;
+width:100%;
+padding:14px;
+border:none;
+border-radius:30px;
+background:red;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+/* ================= TABLET ================= */
+
+@media (max-width:1024px){
+
+.topbar{
+padding:18px 24px;
+font-size:16px;
+}
+
+.target{
+width:56px;
+height:56px;
+}
+
+.modal-content{
+width:90%;
+max-width:420px;
+}
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width:768px){
+
+.topbar{
+padding:16px 18px;
+font-size:15px;
+}
+
+.settings-icon{
+font-size:20px;
+}
+
+.target{
+width:52px;
+height:52px;
+}
+
+.modal-content{
+width:92%;
+padding:26px;
+}
+
+.exit-btn{
+padding:14px;
+font-size:15px;
+}
+
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width:480px){
+
+.topbar{
+padding:14px 16px;
+font-size:14px;
+}
+
+.target{
+width:48px;
+height:48px;
+}
+
+.modal-content{
+padding:22px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+<div id="timeLeft">60</div>
+<div id="motionLabel">MEDIUM</div>
+<div class="settings-icon" onclick="openSettings()">⚙</div>
+</div>
+
+<div id="target" class="target"></div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal" id="settingsModal">
+<div class="modal-content">
+
+<h2>Drill Settings</h2>
+
+<div class="section-title">Motion Speed</div>
+<div class="chip-row">
+<div class="chip" onclick="setSpeed('SLOW',1200,this)">SLOW</div>
+<div class="chip active" onclick="setSpeed('MEDIUM',900,this)">MEDIUM</div>
+<div class="chip" onclick="setSpeed('FAST',600,this)">FAST</div>
+</div>
+
+<div class="section-title">Session Time</div>
+<div class="chip-row">
+<div class="chip" onclick="setTime(10,this)">10s</div>
+<div class="chip" onclick="setTime(30,this)">30s</div>
+<div class="chip active" onclick="setTime(60,this)">1m</div>
+<div class="chip" onclick="setTime(300,this)">5m</div>
+</div>
+
+<button class="exit-btn" onclick="exitDrill()">Exit Drill</button>
+
+</div>
+</div>
+
+<script>
+
+/* ================= GAME VARIABLES ================= */
+
+let sessionSeconds = 60;
+let timeLeft = sessionSeconds;
+let jumpIntervalMs = 900;
+let motionLabel = "MEDIUM";
+
+let taps = 0;
+let misses = 0;
+let reactionTotal = 0;
+let lastSpawnTime = Date.now();
+
+let paused = false;
+
+const target = document.getElementById("target");
+const timeText = document.getElementById("timeLeft");
+const motionText = document.getElementById("motionLabel");
+const modal = document.getElementById("settingsModal");
+
+motionText.innerText = motionLabel;
+
+/* ================= TIMER ================= */
+
+let timer = setInterval(() => {
+
+if (!paused) {
+timeLeft--;
+timeText.innerText = timeLeft;
+}
+
+if (timeLeft <= 0) {
+clearInterval(timer);
+clearInterval(spawnInterval);
+showResult();
+}
+
+},1000);
+
+/* ================= TARGET ENGINE ================= */
+
+function spawnTarget(){
+if(paused || timeLeft<=0) return;
+
+const x=Math.random()*(window.innerWidth-60);
+const y=Math.random()*(window.innerHeight-100); /* avoid topbar */
+
+target.style.left=x+"px";
+target.style.top=y+"px";
+
+lastSpawnTime=Date.now();
+}
+
+let spawnInterval=setInterval(spawnTarget,jumpIntervalMs);
+
+/* ================= CLICK LOGIC ================= */
+
+target.onclick=function(e){
+if(paused||timeLeft<=0) return;
+
+taps++;
+reactionTotal+=Date.now()-lastSpawnTime;
+e.stopPropagation();
+};
+
+document.body.onclick=function(){
+if(!paused && timeLeft>0) misses++;
+};
+
+/* ================= SETTINGS ================= */
+
+function openSettings(){
+paused=true;
+modal.classList.add("active");
+}
+
+function closeSettings(){
+paused=false;
+modal.classList.remove("active");
+}
+
+function clearActive(group){
+group.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+}
+
+function setSpeed(label,interval,el){
+jumpIntervalMs=interval;
+motionLabel=label;
+motionText.innerText=label;
+
+clearActive(el.parentElement);
+el.classList.add("active");
+
+clearInterval(spawnInterval);
+spawnInterval=setInterval(spawnTarget,jumpIntervalMs);
+}
+
+function setTime(sec,el){
+sessionSeconds=sec;
+timeLeft=sec;
+timeText.innerText=sec;
+
+clearActive(el.parentElement);
+el.classList.add("active");
+}
+
+/* ================= EXIT DRILL ================= */
+
+function exitDrill(){
+paused = true;
+clearInterval(timer);
+clearInterval(spawnInterval);
+window.location.href="home.html";
+}
+
+modal.onclick=function(e){
+if(e.target===modal){
+closeSettings();
+}
+};
+
+/* ================= RESULT ================= */
+
+function showResult(){
+
+const avg=taps===0?0:Math.floor(reactionTotal/taps);
+const totalAttempts=taps+misses;
+const accuracy=totalAttempts===0?0:taps/totalAttempts;
+const speedFactor=avg===0?0:1000/avg;
+
+const score=Math.floor(
+taps*10+
+accuracy*200+
+speedFactor*100
+);
+
+window.location.href =
+"reaction_result.html?hits="+taps+
+"&avg="+avg+
+"&misses="+misses+
+"&score="+score+
+"&game=reaction_jump";
+}
+
+</script>
+
+</body>
+</html>

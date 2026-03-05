@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Random Target</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+overflow:hidden;
+background:black;
+color:white;
+}
+
+/* TOP BAR */
+
+.topbar{
+position:absolute;
+top:0;
+width:100%;
+display:flex;
+justify-content:space-between;
+padding:20px 30px;
+box-sizing:border-box;
+font-size:18px;
+align-items:center;
+}
+
+.settings-icon{
+cursor:pointer;
+font-size:22px;
+}
+
+/* TARGET */
+
+.target{
+position:absolute;
+width:60px;
+height:60px;
+border-radius:50%;
+background:cyan;
+cursor:pointer;
+}
+
+/* SETTINGS MODAL */
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.6);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.modal.active{
+display:flex;
+}
+
+.modal-content{
+background:#ede2d9;
+padding:35px;
+border-radius:28px;
+width:400px;
+color:black;
+}
+
+.chip{
+padding:8px 18px;
+border-radius:12px;
+border:2px solid #888;
+cursor:pointer;
+margin-right:10px;
+margin-bottom:8px;
+display:inline-block;
+}
+
+.chip.active{
+background:#f4c7a1;
+border-color:#f4c7a1;
+}
+
+.exit-btn{
+margin-top:25px;
+width:100%;
+padding:15px;
+border:none;
+border-radius:50px;
+background:red;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+/* ================= TABLET ================= */
+
+@media (max-width:1024px){
+
+.modal-content{
+width:90%;
+max-width:420px;
+}
+
+.topbar{
+padding:18px 22px;
+font-size:16px;
+}
+
+.target{
+width:56px;
+height:56px;
+}
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width:768px){
+
+.topbar{
+padding:16px 18px;
+font-size:15px;
+}
+
+.settings-icon{
+font-size:20px;
+}
+
+.target{
+width:52px;
+height:52px;
+}
+
+.modal-content{
+width:92%;
+padding:28px;
+}
+
+.exit-btn{
+padding:14px;
+font-size:15px;
+}
+
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width:480px){
+
+.topbar{
+padding:14px 16px;
+font-size:14px;
+}
+
+.target{
+width:48px;
+height:48px;
+}
+
+.modal-content{
+padding:24px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+<div id="timeText">30</div>
+<div id="speedLabel">MEDIUM</div>
+<div class="settings-icon" onclick="openSettings()">⚙</div>
+</div>
+
+<div id="target" class="target"></div>
+
+<!-- SETTINGS -->
+<div id="settingsModal" class="modal">
+<div class="modal-content">
+
+<h2>Drill Settings</h2>
+
+<p><b>Motion Speed</b></p>
+<div>
+<span class="chip" onclick="setSpeed('SLOW',this)">SLOW</span>
+<span class="chip active" onclick="setSpeed('MEDIUM',this)">MEDIUM</span>
+<span class="chip" onclick="setSpeed('FAST',this)">FAST</span>
+</div>
+
+<p style="margin-top:20px;"><b>Duration</b></p>
+<div>
+<span class="chip" onclick="setTime(20,this)">20s</span>
+<span class="chip active" onclick="setTime(30,this)">30s</span>
+<span class="chip" onclick="setTime(60,this)">60s</span>
+</div>
+
+<button class="exit-btn" onclick="exitDrill()">Exit Drill</button>
+
+</div>
+</div>
+
+<script>
+
+/* ---------- STATE ---------- */
+
+let taps=0, misses=0, reactionTotal=0;
+let timeLeft=30;
+let speed="MEDIUM";
+let spawnDelay=900;
+let paused=false;
+let lastSpawnTime=0;
+
+const target=document.getElementById("target");
+const timeText=document.getElementById("timeText");
+const speedLabel=document.getElementById("speedLabel");
+const modal=document.getElementById("settingsModal");
+
+/* ---------- TIMER ---------- */
+
+let timer=setInterval(()=>{
+if(!paused){
+timeLeft--;
+timeText.innerText=timeLeft;
+}
+if(timeLeft<=0){
+clearInterval(timer);
+endGame();
+}
+},1000);
+
+/* ---------- SPAWN ENGINE ---------- */
+
+function spawnLoop(){
+
+if(paused||timeLeft<=0){
+setTimeout(spawnLoop,100);
+return;
+}
+
+setTimeout(()=>{
+
+if(paused||timeLeft<=0){
+spawnLoop();
+return;
+}
+
+let x=Math.random()*(window.innerWidth-60);
+let y=Math.random()*(window.innerHeight-100); /* avoids topbar overlap */
+
+target.style.left=x+"px";
+target.style.top=y+"px";
+
+lastSpawnTime=Date.now();
+
+spawnLoop();
+
+},spawnDelay);
+
+}
+
+spawnLoop();
+
+/* ---------- CLICK LOGIC ---------- */
+
+document.body.addEventListener("click",function(e){
+
+if(paused||timeLeft<=0) return;
+
+if(e.target===target){
+taps++;
+let rt=Date.now()-lastSpawnTime;
+reactionTotal+=rt;
+}
+else{
+misses++;
+}
+
+});
+
+/* ---------- SETTINGS ---------- */
+
+function openSettings(){
+paused=true;
+modal.classList.add("active");
+}
+
+modal.onclick=function(e){
+if(e.target===modal){
+paused=false;
+modal.classList.remove("active");
+}
+};
+
+function setSpeed(v,el){
+speed=v;
+speedLabel.innerText=v;
+
+if(v==="SLOW") spawnDelay=1200;
+if(v==="MEDIUM") spawnDelay=900;
+if(v==="FAST") spawnDelay=600;
+
+document.querySelectorAll(".chip")
+.forEach(c=>c.classList.remove("active"));
+el.classList.add("active");
+}
+
+function setTime(t,el){
+timeLeft=t;
+timeText.innerText=t;
+
+document.querySelectorAll(".chip")
+.forEach(c=>c.classList.remove("active"));
+el.classList.add("active");
+}
+
+function exitDrill(){
+window.location.href="sports.html";
+}
+
+/* ---------- END GAME ---------- */
+
+function endGame(){
+
+let avg=taps===0?0:Math.floor(reactionTotal/taps);
+let score=taps*100 - misses*30 - Math.floor(avg/5);
+
+const params=new URLSearchParams(window.location.search);
+const origin=params.get("origin")||"home";
+
+window.location.href=
+"reaction_result.html?hits="+taps+
+"&avg="+avg+
+"&misses="+misses+
+"&score="+score+
+"&game=random"+
+"&origin="+origin;
+}
+
+</script>
+
+</body>
+</html>
