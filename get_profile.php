@@ -14,7 +14,7 @@ $r = $q->get_result()->fetch_assoc();
 
 if($r && $r["profile_image"] != "") {
     $r["profile_image"] =
-      "http://10.158.252.111/sports_vision_trainer/" . $r["profile_image"];
+      "http://10.19.67.111/sports_vision_trainer/" . $r["profile_image"];
 }
 
 echo json_encode($r);
