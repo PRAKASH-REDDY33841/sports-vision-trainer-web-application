@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1/sports_vision_trainer/";
+const BASE_URL = "http://10.19.67.111:8000/";
 
 function login() {
 
