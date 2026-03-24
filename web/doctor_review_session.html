@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athlete Session History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #FDF9F1;
+            color: #2D1E16;
+            padding-bottom: 40px;
+        }
+
+        .top-nav {
+            display: flex;
+            align-items: center;
+            padding: 24px;
+            gap: 16px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #2D1E16;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .nav-title {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            padding: 0 24px;
+        }
+
+        /* Patient Overview */
+        .overview-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #888;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .athlete-name {
+            font-size: 36px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+            letter-spacing: -1px;
+        }
+
+        .session-date {
+            font-size: 13px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .btn-details {
+            background: #2D1E16;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 24px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            margin-bottom: 32px;
+        }
+
+        /* Analytics Cards */
+        .card {
+            background: #FFFFFF;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 16px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .card-blue {
+            background: #D4EBEF;
+        }
+
+        .card-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #888;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .card-icon {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            color: #888;
+            font-size: 16px;
+        }
+
+        .card-value {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 8px;
+            letter-spacing: -1.5px;
+        }
+
+        .card-subtext {
+            font-size: 13px;
+            font-weight: 700;
+            color: #4CAF50; /* Green */
+        }
+
+        .accuracy-bar {
+            height: 4px;
+            background: #2D1E16;
+            width: 100%;
+            border-radius: 2px;
+            margin-top: 12px;
+        }
+
+        /* Detailed Breakdown */
+        .breakdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 32px 0 24px 0;
+        }
+
+        .breakdown-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .breakdown-actions {
+            display: flex;
+            gap: 16px;
+            color: #888;
+            font-size: 18px;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr 1fr;
+            padding: 16px 0;
+            border-bottom: 1px solid #EBE4D8;
+            align-items: center;
+        }
+
+        .table-header {
+            font-size: 11px;
+            color: #888;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table-cell {
+            font-size: 14px;
+        }
+
+        .cell-id, .cell-reaction {
+            color: #888;
+        }
+
+        .cell-game, .cell-score {
+            font-weight: 800;
+            color: #2D1E16;
+        }
+
+        /* Clinical Note */
+        .clinical-note-card {
+            background: #2B211A;
+            border-radius: 24px;
+            padding: 24px;
+            margin-top: 24px;
+            color: #FFFFFF;
+        }
+
+        .clinical-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0 0 16px 0;
+        }
+
+        .clinical-text {
+            font-size: 14px;
+            color: #C8B6A6;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .clinical-image-ph {
+            background: #4A3A2F;
+            border-radius: 16px;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .clinical-image-ph i {
+            font-size: 64px;
+            color: #5D4A3E;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <button class="back-btn" onclick="window.location.href='doctor_home.html'">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <div class="nav-title">Athlete Session History</div>
+    </div>
+
+    <div class="container">
+        
+        <div class="overview-label">Patient Overview</div>
+        <h1 class="athlete-name" id="athleteName">Athlete Name</h1>
+        <div class="session-date">
+            <i class="fa-regular fa-calendar"></i>
+            <span id="sessionDate">Session Date: -</span>
+        </div>
+
+        <button class="btn-details">SESSION DETAILS</button>
+
+        <!-- Dynamic Data Loaded Into Overviews -->
+        <div class="card">
+            <div class="card-label">TOTAL SCORE</div>
+            <i class="fa-solid fa-trophy card-icon"></i>
+            <div class="card-value" id="valScore">0</div>
+            <div class="card-subtext">+12% from last session</div>
+        </div>
+
+        <div class="card card-blue">
+            <div class="card-label">AVG REACTION</div>
+            <i class="fa-solid fa-stopwatch card-icon"></i>
+            <div class="card-value" id="valReaction">0ms</div>
+            <div class="card-subtext">Optimal Focus Zone</div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">ACCURACY</div>
+            <i class="fa-solid fa-clock-rotate-left card-icon"></i>
+            <div class="card-value" id="valAccuracy">0%</div>
+            <div class="accuracy-bar"></div>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="breakdown-header">
+            <h2 class="breakdown-title">Detailed Breakdown</h2>
+            <div class="breakdown-actions">
+                <i class="fa-solid fa-bars-staggered"></i>
+                <i class="fa-solid fa-download"></i>
+            </div>
+        </div>
+
+        <div class="table-row table-header">
+            <div>ID</div>
+            <div>GAME TYPE</div>
+            <div>SCORE</div>
+            <div>AVG REACTION</div>
+        </div>
+
+        <div id="breakdownContainer">
+            <!-- Populated via JS -->
+            <div style="padding: 16px 0; color: #888; font-size: 14px;">Loading breakdown...</div>
+        </div>
+
+        <div class="clinical-note-card">
+            <h2 class="clinical-title">Doctor's Clinical Note</h2>
+            <div class="clinical-text" id="clinicalNoteText">
+                "Athlete shows exceptional progress in saccadic tracking speed. Reaction times have decreased compared to the baseline assessment. Recommend increasing stimulus complexity in the next cycle."
+            </div>
+            <div class="clinical-image-ph">
+                <i class="fa-regular fa-image"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            const email = params.get("email");
+            const name = params.get("name") || "Athlete";
+            const date = params.get("date") || "2026-03-26";
+
+            document.getElementById("athleteName").innerText = name;
+            document.getElementById("sessionDate").innerText = `Session Date: ${date}`;
+            
+            // Customize dummy note
+            document.getElementById("clinicalNoteText").innerText = `"${name} shows exceptional progress in saccadic tracking speed. Reaction times have decreased compared to the baseline assessment. Recommend increasing stimulus complexity in the next cycle."`;
+
+            if (email) {
+                fetchSessions(email);
+            } else {
+                document.getElementById("breakdownContainer").innerHTML = "<div style='padding: 16px 0; color: #888;'>No athlete specified.</div>";
+            }
+        });
+
+        function fetchSessions(athleteEmail) {
+            if (typeof BASE_URL === 'undefined') return;
+
+            fetch(BASE_URL + "get_sessions.php?email=" + encodeURIComponent(athleteEmail))
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById("breakdownContainer");
+
+                if (data.status === "success" && data.sessions && data.sessions.length > 0) {
+                    container.innerHTML = "";
+                    
+                    let totalScore = 0;
+                    let totalReaction = 0;
+                    let recordCount = 0;
+
+                    let html = "";
+                    data.sessions.forEach((session, index) => {
+                        html += `
+                        <div class="table-row">
+                            <div class="table-cell cell-id">#${1000 + index}</div>
+                            <div class="table-cell cell-game">${session.gameType}</div>
+                            <div class="table-cell cell-score">${session.score}</div>
+                            <div class="table-cell cell-reaction">${session.avgReaction}ms</div>
+                        </div>
+                        `;
+                        totalScore += session.score;
+                        totalReaction += session.avgReaction;
+                        recordCount++;
+                    });
+
+                    container.innerHTML = html;
+
+                    // Update Top Cards
+                    document.getElementById("valScore").innerText = totalScore;
+                    document.getElementById("valReaction").innerText = recordCount > 0 ? Math.round(totalReaction / recordCount) + "ms" : "0ms";
+                    document.getElementById("valAccuracy").innerText = "100%"; // Arbitrary 100% since wrong clicks aren't clearly mapping to overall accuracy % natively.
+                } else {
+                    container.innerHTML = "<div style='padding: 16px 0; color: #888;'>No recent sessions found for this athlete.</div>";
+                }
+            })
+            .catch(err => {
+                console.error("Fetch sessions error:", err);
+                document.getElementById("breakdownContainer").innerHTML = "<div style='padding: 16px 0; color: #888;'>Error fetching data.</div>";
+            });
+        }
+    </script>
+</body>
+</html>

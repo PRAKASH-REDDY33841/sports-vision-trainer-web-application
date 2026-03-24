@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Forgot Password</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #FDF9F1;
+            color: #2D1E16;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 40px;
+            left: 24px;
+            font-size: 24px;
+            color: #2D1E16;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            padding: 40px 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header-sub {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #2D1E16;
+            text-transform: uppercase;
+        }
+
+        .header-main {
+            font-size: 38px;
+            font-weight: 900;
+            color: #2D1E16;
+            margin: 8px 0 16px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #888;
+            line-height: 1.5;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .input-wrapper {
+            position: relative;
+            background: #FFFFFF;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            padding: 4px 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid #EBE4D8;
+        }
+
+        .input-wrapper.error {
+            border-color: #ff4d4f;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 16px 0;
+            font-size: 16px;
+            color: #2D1E16;
+            outline: none;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #CCCCCC;
+        }
+
+        .error-msg {
+            color: #ff4d4f;
+            font-size: 12px;
+            margin-top: 6px;
+            min-height: 16px;
+        }
+
+        .auth-error {
+            text-align: center;
+            color: #ff4d4f;
+            font-size: 14px;
+            margin-top: -12px;
+            margin-bottom: 16px;
+            min-height: 20px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #2D1E16;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 30px;
+            padding: 20px;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s;
+            margin-top: 16px;
+            text-transform: uppercase;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
+    </style>
+</head>
+<body>
+
+    <a href="doctor_login.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+
+    <div class="container">
+        
+        <div class="header">
+            <div class="header-sub">VISION TRAINING</div>
+            <div class="header-main">Forgot Password</div>
+            <p class="subtitle">Enter your professional clinical email to receive a secure access code.</p>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">CLINIC EMAIL</label>
+            <div class="input-wrapper" id="emailWrapper">
+                <input type="email" id="email" placeholder="dr.vane@clinic.com">
+            </div>
+            <div class="error-msg" id="emailError"></div>
+        </div>
+
+        <div class="auth-error" id="authError"></div>
+
+        <button class="submit-btn" id="submitBtn">
+            CONTINUE
+        </button>
+
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const emailInput = document.getElementById("email");
+        const emailWrapper = document.getElementById("emailWrapper");
+        const emailError = document.getElementById("emailError");
+        
+        const authError = document.getElementById("authError");
+        const submitBtn = document.getElementById("submitBtn");
+
+        function clearErrors() {
+            emailError.innerText = "";
+            emailWrapper.classList.remove("error");
+            authError.innerText = "";
+        }
+
+        emailInput.addEventListener("input", clearErrors);
+
+        emailInput.addEventListener("blur", () => {
+            if(!emailInput.value.trim()) {
+                emailError.innerText = "Required";
+                emailWrapper.classList.add("error");
+            }
+        });
+
+        submitBtn.addEventListener("click", () => {
+            clearErrors();
+            let valid = true;
+
+            const email = emailInput.value.trim();
+
+            if (!email) {
+                emailError.innerText = "Required";
+                emailWrapper.classList.add("error");
+                valid = false;
+            }
+
+            if (!valid) return;
+
+            submitBtn.innerText = "SENDING...";
+            submitBtn.style.opacity = "0.7";
+
+            // Using the doctor_send_otp.php endpoint
+            fetch(BASE_URL + "doctor_send_otp.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    localStorage.setItem("resetEmail", email);
+                    window.location.href = "doctor_verify.html";
+                } else {
+                    authError.innerText = data.message || "Failed to send OTP";
+                    submitBtn.innerText = "CONTINUE";
+                    submitBtn.style.opacity = "1";
+                }
+            })
+            .catch(() => {
+                authError.innerText = "Server connection failed";
+                submitBtn.innerText = "CONTINUE";
+                submitBtn.style.opacity = "1";
+            });
+        });
+    </script>
+</body>
+</html>

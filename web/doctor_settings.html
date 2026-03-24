@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #FDF9F1;
+            color: #2D1E16;
+            padding-bottom: 100px;
+        }
+
+        .container {
+            padding: 40px 24px 24px;
+        }
+
+        .header-sub {
+            font-size: 11px;
+            color: #888;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .header-main {
+            font-size: 30px;
+            font-weight: 800;
+            margin: 0 0 32px 0;
+            letter-spacing: -0.5px;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: #F9F1E8;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .profile-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #DCCCBE;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0 0 4px 0;
+        }
+
+        .profile-email {
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* Menu Links */
+        .menu-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .menu-card:active {
+            background: #F9F9F9;
+        }
+
+        .menu-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #F9F1E8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2D1E16;
+            font-size: 16px;
+        }
+
+        .menu-texts {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin: 0 0 4px 0;
+        }
+
+        .menu-subtitle {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .menu-arrow {
+            color: #ccc;
+            font-size: 16px;
+        }
+
+        /* FAQ Expansion */
+        .faq-block {
+            background: #FFFFFF;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            overflow: hidden;
+        }
+        
+        /* Instead of separate card, apply faq-header as menu-card without margin */
+        .faq-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .faq-body {
+            display: none;
+            padding: 0 16px 16px 16px;
+        }
+
+        .faq-q {
+            font-size: 14px;
+            font-weight: 800;
+            color: #2D1E16;
+            margin: 16px 0 8px 0;
+        }
+
+        .faq-a {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.5;
+            margin: 0 0 8px 0;
+        }
+
+        /* History Section */
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin: 32px 0 16px 0;
+        }
+
+        .history-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .history-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .h-name {
+            font-size: 16px;
+            font-weight: 800;
+            margin: 0 0 6px 0;
+            color: #2D1E16;
+        }
+
+        .h-time {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 8px 12px;
+            border-radius: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.rejected {
+            color: #E53935;
+            background: #FDECEA;
+        }
+
+        .badge.cancelled {
+            color: #888;
+            background: #F2F2F2;
+        }
+
+        .badge.accepted {
+            color: #4CAF50;
+            background: #E8F5E9;
+        }
+
+        /* Logout */
+        .logout-btn {
+            width: 100%;
+            background: #FDECEA;
+            color: #E53935;
+            border: none;
+            border-radius: 30px;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 800;
+            margin-top: 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Bottom Bar */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: #FFFFFF;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+            z-index: 1000;
+        }
+
+        .tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .tab-icon-wrap {
+            padding: 8px 24px;
+            border-radius: 12px;
+            margin-bottom: 4px;
+            transition: background 0.3s;
+        }
+
+        .tab.active .tab-icon-wrap {
+            background: #D4EBEF;
+        }
+
+        .tab i {
+            font-size: 20px;
+            color: #888;
+            transition: color 0.3s;
+        }
+
+        .tab.active i {
+            color: #2D1E16;
+        }
+
+        .tab-text {
+            font-size: 11px;
+            font-weight: 700;
+            color: #888;
+            transition: color 0.3s;
+        }
+
+        .tab.active .tab-text {
+            color: #2D1E16;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-sub">SETTINGS</div>
+        <h1 class="header-main">Management & Support</h1>
+
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23EBE4D8'/%3E%3Ctext x='50' y='55' font-size='40' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%232D1E16'%3E%26%23128100%3B%3C/text%3E%3C/svg%3E" alt="Profile" class="profile-avatar" id="profileImage">
+            <div class="profile-info">
+                <h2 class="profile-name" id="profileName">Doctor</h2>
+                <div class="profile-email" id="profileEmail">email@clinic.com</div>
+            </div>
+        </div>
+
+        <!-- Contact Support -->
+        <div class="menu-card" onclick="contactSupport()">
+            <div class="menu-left">
+                <div class="menu-icon-wrap"><i class="fa-solid fa-envelope"></i></div>
+                <div class="menu-texts">
+                    <div class="menu-title">Contact Support</div>
+                    <div class="menu-subtitle">Open mail to get in touch</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right menu-arrow"></i>
+        </div>
+
+        <!-- Help & FAQs -->
+        <div class="faq-block">
+            <div class="faq-header" onclick="toggleFAQ()">
+                <div class="menu-left">
+                    <div class="menu-icon-wrap"><i class="fa-solid fa-circle-question"></i></div>
+                    <div class="menu-texts">
+                        <div class="menu-title">Help & FAQs</div>
+                        <div class="menu-subtitle">App guide and common questions</div>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-arrow" id="faqArrow"></i>
+            </div>
+            <div class="faq-body" id="faqBody">
+                <div class="faq-q">How to accept appointments?</div>
+                <div class="faq-a">Go to Home tab and click 'Accept' on any pending alert.</div>
+                
+                <div class="faq-q">How to view athlete progress?</div>
+                <div class="faq-a">Click 'REVIEW SESSION' on any accepted athlete card.</div>
+            </div>
+        </div>
+
+        <!-- Recent History -->
+        <h2 class="section-title">Recent History</h2>
+        <div id="historyContainer">
+            <div style="color: #888; font-size: 14px;">Loading history...</div>
+        </div>
+
+        <button class="logout-btn" onclick="logoutSession()">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout Session
+        </button>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+        <a class="tab" href="doctor_home.html">
+            <div class="tab-icon-wrap">
+                <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <span class="tab-text">Home</span>
+        </a>
+        <a class="tab active" href="doctor_settings.html">
+            <div class="tab-icon-wrap">
+                <i class="fa-solid fa-gear"></i>
+            </div>
+            <span class="tab-text">Settings</span>
+        </a>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const doctorEmail = localStorage.getItem("userEmail") || "";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!doctorEmail || localStorage.getItem("userRole") !== "doctor") {
+                // Not authenticated as doctor
+                window.location.href = "login.html";
+                return;
+            }
+            
+            document.getElementById("profileEmail").innerText = doctorEmail;
+            fetchDoctorProfile();
+            fetchDoctorHistory();
+        });
+
+        function fetchDoctorProfile() {
+            if (typeof BASE_URL === 'undefined') return;
+
+            fetch(BASE_URL + "get_doctor_profile.php?email=" + encodeURIComponent(doctorEmail))
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.username) {
+                    document.getElementById('profileName').innerText = data.username;
+                    if (data.profile_image) {
+                        document.getElementById('profileImage').src = data.profile_image;
+                    }
+                }
+            })
+            .catch(err => {
+                console.error("Profile fetch error:", err);
+                document.getElementById('profileName').innerText = "Dr prakash";
+            });
+        }
+
+        function toggleFAQ() {
+            const body = document.getElementById('faqBody');
+            const arrow = document.getElementById('faqArrow');
+            if (body.style.display === 'block') {
+                body.style.display = 'none';
+                arrow.classList.replace("fa-chevron-down", "fa-chevron-right");
+            } else {
+                body.style.display = 'block';
+                arrow.classList.replace("fa-chevron-right", "fa-chevron-down");
+            }
+        }
+
+        function contactSupport() {
+            const email = "sportsvisiontrainer@gmail.com";
+            const subject = encodeURIComponent("Doctor Support Request");
+            const body = encodeURIComponent("Describe your issue here...");
+            const gmailComposeURL = `https://mail.google.com/mail/u/0/?view=cm&fs=1&tf=1&to=${email}&su=${subject}&body=${body}`;
+            window.open(gmailComposeURL, "_blank");
+        }
+
+        function fetchDoctorHistory() {
+            if (typeof BASE_URL === 'undefined') return;
+
+            fetch(BASE_URL + "get_doctor_history.php?email=" + encodeURIComponent(doctorEmail))
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('historyContainer');
+                if (data.status === "success" && data.appointments && data.appointments.length > 0) {
+                    container.innerHTML = "";
+                    data.appointments.forEach(app => {
+                        let statusClass = app.status.toLowerCase(); // 'rejected', 'cancelled', 'accepted'
+                        container.innerHTML += `
+                            <div class="history-card">
+                                <div class="history-left">
+                                    <h3 class="h-name">${app.athlete_name}</h3>
+                                    <div class="h-time">${app.date} at ${app.time}</div>
+                                </div>
+                                <div class="badge ${statusClass}">${app.status.toUpperCase()}</div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = `<div style="color: #888; font-size: 14px;">No recent history available.</div>`;
+                }
+            })
+            .catch(err => {
+                console.error("History fetch error:", err);
+                document.getElementById('historyContainer').innerHTML = `<div style="color: #888; font-size: 14px;">Unable to fetch history.</div>`;
+            });
+        }
+
+        function logoutSession() {
+            localStorage.removeItem("userEmail");
+            localStorage.removeItem("userRole");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>

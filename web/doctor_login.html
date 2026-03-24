@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #FDF9F1;
+            color: #2D1E16;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            padding: 40px 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .header-sub {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #2D1E16;
+            text-transform: uppercase;
+        }
+
+        .header-main {
+            font-size: 32px;
+            font-weight: 900;
+            color: #2D1E16;
+            margin: 4px 0 0 0;
+            letter-spacing: -0.5px;
+        }
+
+        .header-divider {
+            width: 40px;
+            height: 2px;
+            background: #E8DCCB;
+            margin: 16px auto 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #D4EBEF;
+            color: #2B6B73;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 8px 16px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0 0 12px 0;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #888;
+            line-height: 1.5;
+            margin-bottom: 40px;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .input-wrapper {
+            position: relative;
+            background: #FFFFFF;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            padding: 4px 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid #EBE4D8;
+        }
+
+        .input-wrapper.error {
+            border-color: #ff4d4f;
+        }
+
+        .input-icon {
+            color: #888;
+            font-size: 18px;
+            margin-right: 12px;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 16px 0;
+            font-size: 16px;
+            color: #2D1E16;
+            outline: none;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #CCCCCC;
+        }
+
+        .toggle-password {
+            color: #888;
+            font-size: 18px;
+            cursor: pointer;
+            padding-left: 12px;
+        }
+
+        .error-msg {
+            color: #ff4d4f;
+            font-size: 12px;
+            margin-top: 6px;
+            min-height: 16px;
+        }
+
+        .auth-error {
+            text-align: center;
+            color: #ff4d4f;
+            font-size: 14px;
+            margin-top: -12px;
+            margin-bottom: 16px;
+            min-height: 20px;
+        }
+
+        .forgot-link {
+            display: block;
+            color: #2B6B73;
+            font-weight: 800;
+            font-size: 14px;
+            text-decoration: none;
+            margin-bottom: 40px;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #2D1E16;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 30px;
+            padding: 20px;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            opacity: 0.9;
+        }
+
+        .footer-links {
+            margin-top: 40px;
+            font-size: 13px;
+            color: #888;
+            border-left: 3px solid #E8DCCB;
+            padding-left: 16px;
+            line-height: 2;
+        }
+
+        .footer-link {
+            color: #2D1E16;
+            font-weight: 800;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="header">
+            <div class="header-sub">OCULAR ATHLETIC</div>
+            <div class="header-main">VISION TRAINING</div>
+            <div class="header-divider"></div>
+        </div>
+
+        <div class="badge">CLINICAL ACCESS</div>
+
+        <h2>Doctor Login</h2>
+        <p class="subtitle">Manage patient performance and training protocols.</p>
+
+        <div class="input-group">
+            <label class="input-label">MEDICAL EMAIL</label>
+            <div class="input-wrapper" id="emailWrapper">
+                <i class="fa-regular fa-envelope input-icon"></i>
+                <input type="email" id="email" placeholder="name@clinic.com" required>
+            </div>
+            <div class="error-msg" id="emailError"></div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">CREDENTIALS</label>
+            <div class="input-wrapper" id="passwordWrapper">
+                <i class="fa-solid fa-lock input-icon"></i>
+                <input type="password" id="password" placeholder="••••••••" required>
+                <i class="fa-regular fa-eye-slash toggle-password" id="eyeBtn" onclick="togglePassword()"></i>
+            </div>
+            <div class="error-msg" id="passwordError"></div>
+        </div>
+
+        <a href="doctor_forgot.html" class="forgot-link">Forgot password?</a>
+
+        <div class="auth-error" id="authError"></div>
+
+        <button class="login-btn" id="loginBtn">
+            LOGIN <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <div class="footer-links">
+            <div>Don't have an account? <a href="doctor_register.html" class="footer-link">Register here -></a></div>
+            <div>Not a medical professional? <a href="login.html" class="footer-link">Athlete Login</a></div>
+        </div>
+
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const emailInput = document.getElementById("email");
+        const passInput = document.getElementById("password");
+        const loginBtn = document.getElementById("loginBtn");
+
+        const emailError = document.getElementById("emailError");
+        const passError = document.getElementById("passwordError");
+        const authError = document.getElementById("authError");
+
+        const emailWrapper = document.getElementById("emailWrapper");
+        const passwordWrapper = document.getElementById("passwordWrapper");
+
+        function togglePassword() {
+            const eyeBtn = document.getElementById("eyeBtn");
+            if (passInput.type === "password") {
+                passInput.type = "text";
+                eyeBtn.classList.replace("fa-eye-slash", "fa-eye");
+            } else {
+                passInput.type = "password";
+                eyeBtn.classList.replace("fa-eye", "fa-eye-slash");
+            }
+        }
+
+        function clearErrors() {
+            emailError.innerText = "";
+            passError.innerText = "";
+            authError.innerText = "";
+            emailWrapper.classList.remove("error");
+            passwordWrapper.classList.remove("error");
+        }
+        emailInput.addEventListener("input", clearErrors);
+        passInput.addEventListener("input", clearErrors);
+
+        emailInput.addEventListener("blur", () => {
+            if(!emailInput.value.trim()) { emailError.innerText = "Required"; emailWrapper.classList.add("error"); }
+        });
+        passInput.addEventListener("blur", () => {
+            if(!passInput.value.trim()) { passError.innerText = "Required"; passwordWrapper.classList.add("error"); }
+        });
+
+        loginBtn.addEventListener("click", () => {
+            clearErrors();
+            let valid = true;
+
+            if (emailInput.value.trim() === "") {
+                emailError.innerText = "Email is required";
+                emailWrapper.classList.add("error");
+                valid = false;
+            }
+
+            if (passInput.value.trim() === "") {
+                passError.innerText = "Password is required";
+                passwordWrapper.classList.add("error");
+                valid = false;
+            }
+
+            if (!valid) return;
+
+            // Using the doctor_login.php endpoint from backend_fastapi/main.py
+            fetch(BASE_URL + "doctor_login.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    clinic_email: emailInput.value.trim(),
+                    password: passInput.value.trim()
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    localStorage.setItem("userEmail", emailInput.value.trim());
+                    localStorage.setItem("userRole", "doctor");
+                    window.location.href = "doctor_home.html";
+                } else {
+                    authError.innerText = data.message || "Invalid credentials";
+                }
+            })
+            .catch(() => {
+                authError.innerText = "Server connection failed";
+            });
+        });
+    </script>
+</body>
+</html>

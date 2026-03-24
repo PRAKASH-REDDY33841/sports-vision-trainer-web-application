@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #FDF9F1;
+            color: #2D1E16;
+            padding-bottom: 90px;
+        }
+        
+        .container {
+            padding: 40px 24px 24px;
+        }
+
+        /* Top Bar */
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 32px;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .profile-img {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #ccc;
+            object-fit: cover;
+            margin-bottom: 8px;
+        }
+
+        .profile-name-small {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2D1E16;
+        }
+
+        .notification {
+            position: relative;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .notification i {
+            font-size: 24px;
+            color: #2D1E16;
+        }
+
+        .badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #FF3B30;
+            color: #FFF;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 7px;
+            border-radius: 12px;
+            border: 2px solid #FDF9F1;
+        }
+
+        /* Welcome Text */
+        .greeting-sub {
+            font-size: 12px;
+            color: #999;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .greeting-main {
+            font-size: 34px;
+            font-weight: 800;
+            color: #2D1E16;
+            line-height: 1.2;
+            margin: 0 0 32px 0;
+            letter-spacing: -0.5px;
+        }
+
+        /* Card */
+        .cohort-card {
+            background: #F9F1E8;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 48px;
+        }
+
+        .cohort-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+            color: #2D1E16;
+        }
+
+        .cohort-desc {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.5;
+            margin: 0 0 24px 0;
+        }
+
+        .cohort-stats {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .stat-number {
+            font-size: 68px;
+            font-weight: 900;
+            line-height: 0.8;
+            color: #2D1E16;
+            letter-spacing: -2px;
+        }
+
+        .stat-trend {
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 4px;
+        }
+
+        .trend-val {
+            color: #4CAF50;
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .trend-label {
+            color: #A0A0A0;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Clinical Alerts */
+        .alerts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .alerts-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #2D1E16;
+            margin: 0;
+        }
+
+        .search-icon {
+            font-size: 20px;
+            color: #2D1E16;
+            cursor: pointer;
+        }
+
+        .no-alerts {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 32px;
+        }
+
+        .accepted-card {
+            background: #F9F1E8;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .accepted-card .athlete-name {
+            font-weight: 800;
+            color: #2D1E16;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .accepted-card .athlete-detail {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Muted Note */
+        .clinical-note {
+            font-size: 13px;
+            color: #999;
+            line-height: 1.7;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        /* Bottom Bar */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: #FFFFFF;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+            z-index: 1000;
+        }
+
+        .tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .tab-icon-wrap {
+            padding: 8px 24px;
+            border-radius: 12px;
+            margin-bottom: 4px;
+            transition: background 0.3s;
+        }
+
+        .tab.active .tab-icon-wrap {
+            background: #D4EBEF;
+        }
+
+        .tab i {
+            font-size: 20px;
+            color: #888;
+            transition: color 0.3s;
+        }
+
+        .tab.active i {
+            color: #2D1E16;
+        }
+
+        .tab-text {
+            font-size: 11px;
+            font-weight: 700;
+            color: #888;
+            transition: color 0.3s;
+        }
+
+        .tab.active .tab-text {
+            color: #2D1E16;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none; justify-content: center; align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: #F9F1E8;
+            border-radius: 24px;
+            width: 90%; max-width: 360px;
+            padding: 24px;
+            max-height: 80vh; overflow-y: auto;
+        }
+
+        .modal-title { font-size: 24px; font-weight: normal; margin: 0 0 20px 0; color: #2D1E16; }
+
+        .pending-card {
+            background: #FDF9F1;
+            border-radius: 16px; padding: 16px; margin-bottom: 16px;
+        }
+
+        .pending-card-title { font-weight: 800; font-size: 15px; margin-bottom: 4px; color: #2D1E16; }
+        .pending-card-detail { font-size: 13px; color: #555; margin-bottom: 4px; }
+        
+        .pending-actions { display: flex; gap: 12px; margin-top: 16px; }
+        .btn-accept { flex: 1; background: #2D1E16; color: white; border: none; padding: 10px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-accept:hover { opacity: 0.8; }
+        .btn-reject { flex: 1; background: transparent; color: #8C5C3D; border: 1px solid #8C5C3D; padding: 10px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-reject:hover { background: #E8DCCB; }
+
+        .modal-close-wrap { text-align: right; margin-top: 16px; }
+        .btn-close-modal { background: none; border: none; color: #8C5C3D; font-weight: bold; font-size: 15px; cursor: pointer; }
+
+        /* Accepted Alert overrides */
+        .accepted-card {
+            background: #F9F1E8;
+            border-radius: 24px;
+            padding: 24px; margin-bottom: 24px;
+        }
+
+        .accepted-header { display: flex; flex-direction: column; margin-bottom: 16px; }
+        .accepted-avatar { width: 48px; height: 48px; border-radius: 50%; opacity: 0.8; margin-bottom: 12px; }
+        .accepted-name { font-size: 22px; font-weight: 800; color: #2D1E16; }
+
+        .accepted-detail { font-size: 14px; color: #888; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .accepted-actions { display: flex; gap: 12px; margin-top: 24px; }
+        
+        .btn-review { background: #FFFFFF; color: #000; font-weight: 800; border-radius: 30px; font-size: 12px; padding: 12px; border: none; flex: 1; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .btn-cancel { background: transparent; color: #E53935; font-weight: 800; border-radius: 30px; font-size: 12px; padding: 12px; border: 1px solid #E53935; flex: 1; cursor: pointer; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Top Section -->
+        <div class="top-section">
+            <div class="profile-info">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23EBE4D8'/%3E%3Ctext x='50' y='55' font-size='40' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%232D1E16'%3E%26%23128100%3B%3C/text%3E%3C/svg%3E" alt="Profile" class="profile-img" id="profileImage">
+                <div class="profile-name-small" id="topName">-</div>
+            </div>
+            <div class="notification" onclick="toggleNotifications()">
+                <i class="fa-solid fa-bell"></i>
+                <span class="badge" id="notifBadge" style="display:none;">0</span>
+            </div>
+        </div>
+
+        <!-- Greeting -->
+        <div class="greeting-sub">MORNING, CLINICIAN</div>
+        <h1 class="greeting-main">Welcome, Dr. <span id="welcomeName">-</span></h1>
+
+        <!-- Cohort Card -->
+        <div class="cohort-card">
+            <h2 class="cohort-title">Active Training Cohort</h2>
+            <p class="cohort-desc">Monitoring real-time neuro-visual<br>progress across 14 active protocols.</p>
+            <div class="cohort-stats">
+                <div class="stat-number">84</div>
+                <div class="stat-trend">
+                    <span class="trend-val">+12%</span>
+                    <span class="trend-label">VS LAST MONTH</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clinical Alerts -->
+        <div class="alerts-header">
+            <h2 class="alerts-title">Clinical Alerts</h2>
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        </div>
+        
+        <div id="alertsContainer">
+            <div class="no-alerts">Loading...</div>
+        </div>
+
+        <!-- Clinical Note -->
+        <p class="clinical-note">
+            Important Clinical Note: Please ensure all neuro-visual thresholds are reviewed daily. Consistent monitoring of saccadic fixation and peripheral awareness is critical for athlete progress. If any significant deviations are observed, adjust the training protocols immediately. Remember to document all clinical sessions in the patient archive for future reference. Your oversight is vital to the neuro-plasticity development of our athletes.
+        </p>
+    </div>
+
+    <!-- Notification Modal -->
+    <div class="modal-overlay" id="notifModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Appointment Requests</h2>
+            <div id="pendingList">
+                <!-- Data goes here -->
+            </div>
+            <div class="modal-close-wrap">
+                <button class="btn-close-modal" onclick="closeNotifications()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+        <a class="tab active" href="doctor_home.html">
+            <div class="tab-icon-wrap">
+                <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <span class="tab-text">Home</span>
+        </a>
+        <a class="tab" href="doctor_settings.html">
+            <div class="tab-icon-wrap">
+                <i class="fa-solid fa-gear"></i>
+            </div>
+            <span class="tab-text">Settings</span>
+        </a>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const doctorEmail = localStorage.getItem("userEmail") || "";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!doctorEmail || localStorage.getItem("userRole") !== "doctor") {
+                // optional: redirect to login if explicitly required
+                // window.location.href = "login.html";
+            }
+
+            fetchDoctorProfile();
+            fetchDoctorAppointments();
+            fetchAcceptedAppointments();
+
+            // Real-time polling to match Android App
+            setInterval(fetchDoctorAppointments, 5000);
+            setInterval(fetchAcceptedAppointments, 5000);
+        });
+
+        function fetchDoctorProfile() {
+            if (typeof BASE_URL === 'undefined') return;
+
+            fetch(BASE_URL + "get_doctor_profile.php?email=" + encodeURIComponent(doctorEmail))
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.username) {
+                    const name = data.username;
+                    document.getElementById('topName').innerText = name;
+                    document.getElementById('welcomeName').innerText = name;
+                    
+                    if (data.profile_image) {
+                        document.getElementById('profileImage').src = data.profile_image;
+                    }
+                } else {
+                    document.getElementById('topName').innerText = "Doctor";
+                    document.getElementById('welcomeName').innerText = "Doctor";
+                }
+            })
+            .catch(err => {
+                console.error("Profile fetch error:", err);
+                // Fallbacks so it looks like the screenshot if offline 
+                document.getElementById('topName').innerText = "Dr prakash";
+                document.getElementById('welcomeName').innerText = "Dr prakash";
+            });
+        }
+
+        let pendingAppointmentsList = [];
+
+        function fetchDoctorAppointments() {
+            if (typeof BASE_URL === 'undefined') return;
+
+            fetch(BASE_URL + "get_doctor_appointments.php?email=" + encodeURIComponent(doctorEmail))
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success" && data.appointments) {
+                    pendingAppointmentsList = data.appointments;
+                    const count = pendingAppointmentsList.length;
+                    const badge = document.getElementById('notifBadge');
+                    if (count > 0) {
+                        badge.innerText = count;
+                        badge.style.display = 'block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                    if (document.getElementById('notifModal').style.display === 'flex') {
+                        renderModalContent();
+                    }
+                }
+            })
+            .catch(err => console.error("Appointments fetch error:", err));
+        }
+
+        function fetchAcceptedAppointments() {
+            if (typeof BASE_URL === 'undefined') return;
+
+            fetch(BASE_URL + "get_accepted_appointments.php?email=" + encodeURIComponent(doctorEmail))
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('alertsContainer');
+                if (data.status === "success" && data.appointments && data.appointments.length > 0) {
+                    container.innerHTML = "";
+                    data.appointments.forEach(app => {
+                        const safeImage = app.profile_image ? app.profile_image : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23EBE4D8'/%3E%3Ctext x='50' y='55' font-size='40' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%232D1E16'%3E%26%23128100%3B%3C/text%3E%3C/svg%3E";
+                        container.innerHTML += `
+                            <div class="accepted-card">
+                                <div class="accepted-header">
+                                    <img src="${safeImage}" class="accepted-avatar" />
+                                    <div class="accepted-name">${app.athlete_name}</div>
+                                </div>
+                                <div class="accepted-detail"><i class="fa-regular fa-clock"></i> ${app.time}</div>
+                                <div class="accepted-detail"><i class="fa-solid fa-phone"></i> ${app.athlete_phone}</div>
+                                <div class="accepted-actions">
+                                    <button class="btn-review" onclick="window.location.href='doctor_review_session.html?email=${encodeURIComponent(app.athlete_email)}&name=${encodeURIComponent(app.athlete_name)}&date=${encodeURIComponent(app.date)}'">REVIEW SESSION</button>
+                                    <button class="btn-cancel" onclick="updateApptStatus(${app.id}, 'cancelled')">CANCEL</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = `<div class="no-alerts">No matching accepted appointments</div>`;
+                }
+            })
+            .catch(err => {
+                console.error("Accepted appointments fetch error:", err);
+                const container = document.getElementById('alertsContainer');
+                container.innerHTML = `<div class="no-alerts">No matching accepted appointments</div>`;
+            });
+        }
+
+        function toggleNotifications() {
+            const overlay = document.getElementById('notifModal');
+            overlay.style.display = 'flex';
+            renderModalContent();
+        }
+
+        function closeNotifications() {
+            document.getElementById('notifModal').style.display = 'none';
+        }
+
+        function renderModalContent() {
+            const list = document.getElementById('pendingList');
+            if(pendingAppointmentsList.length === 0) {
+                list.innerHTML = "<div style='color:#888; margin-top:10px;'>No pending requests.</div>";
+                return;
+            }
+            let html = "";
+            pendingAppointmentsList.forEach(app => {
+                html += `
+                    <div class="pending-card">
+                        <div class="pending-card-title">Athlete: ${app.athlete_name}</div>
+                        <div class="pending-card-detail">Phone: ${app.athlete_phone}</div>
+                        <div class="pending-card-detail">Date: ${app.date} at ${app.time}</div>
+                        <div class="pending-actions">
+                            <button class="btn-accept" onclick="updateApptStatus(${app.id}, 'accepted')">Accept</button>
+                            <button class="btn-reject" onclick="updateApptStatus(${app.id}, 'rejected')">Reject</button>
+                        </div>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        function updateApptStatus(appId, status) {
+            fetch(BASE_URL + "update_appointment_status.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: appId, status: status.toUpperCase() })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success") {
+                    fetchDoctorAppointments();
+                    fetchAcceptedAppointments();
+                } else {
+                    alert("Error: " + (data.message || data.detail || "Failed to update"));
+                }
+            })
+            .catch(err => console.error("Update status error:", err));
+        }
+    </script>
+</body>
+</html>

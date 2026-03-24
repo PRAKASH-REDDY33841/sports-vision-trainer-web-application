@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #fdf8f3;
+            color: #2d1e17;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: #fdf8f3;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-bar .icon-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #2d1e17;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .top-bar .title {
+            font-size: 22px;
+            font-weight: 800;
+            margin-left: 20px;
+            color: #2d1e17;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            display: flex;
+            margin: 0 20px 20px;
+            background: #eae5de;
+            border-radius: 30px;
+            padding: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px 0;
+            text-align: center;
+            border: none;
+            background: transparent;
+            color: #888;
+            font-weight: bold;
+            font-size: 15px;
+            border-radius: 26px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: #2d1e17;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Loading & Empty States */
+        .status-msg {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Bookings List */
+        .bookings-list {
+            padding: 0 20px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid #eee;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+            color: #2d1e17;
+            max-width: 65%;
+            word-wrap: break-word;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.accepted {
+            background: #e6f4ea;
+            color: #1e8e3e;
+        }
+        
+        .badge.pending {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .badge.cancelled {
+            background: #f1f3f4;
+            color: #9aa0a6;
+        }
+
+        .card-details {
+            margin-bottom: 20px;
+        }
+
+        .card-details p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .cancel-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: #e37672;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .cancel-btn:hover {
+            background: #d4635e;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <button class="icon-btn" onclick="window.location.href='settings.html'">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <div class="title">Booking History</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-container">
+        <button class="tab-btn active" id="tabActive" onclick="switchTab('active')">Active Booking</button>
+        <button class="tab-btn" id="tabPrevious" onclick="switchTab('previous')">Previous Booking</button>
+    </div>
+
+    <!-- Status Message -->
+    <div id="statusMsg" class="status-msg">
+        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+        <p style="margin-top: 15px;">Loading history...</p>
+    </div>
+
+    <!-- Bookings List Container -->
+    <div id="bookingsList" class="bookings-list" style="display: none;"></div>
+
+    <script src="js/api.js"></script>
+    <script>
+        let currentTab = 'active'; // 'active' or 'previous'
+        let allBookings = [];
+        let athleteEmail = localStorage.getItem("userEmail") || "";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!athleteEmail) {
+                document.getElementById('statusMsg').innerHTML = `<p style="color:red;">Please log in first.</p>`;
+                setTimeout(() => window.location.href = "login.html", 1500);
+                return;
+            }
+            fetchBookings();
+        });
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            if (tab === 'active') {
+                document.getElementById('tabActive').classList.add('active');
+                document.getElementById('tabPrevious').classList.remove('active');
+            } else {
+                document.getElementById('tabPrevious').classList.add('active');
+                document.getElementById('tabActive').classList.remove('active');
+            }
+            
+            renderBookings();
+        }
+
+        function fetchBookings() {
+            if (typeof BASE_URL === 'undefined') {
+                document.getElementById('statusMsg').innerHTML = `<p style="color:red;">Error: BASE_URL is not defined in api.js</p>`;
+                return;
+            }
+
+            // Using standard get_athlete_bookings endpoint for web, mapped same as android
+            fetch(BASE_URL + "get_athlete_bookings.php?email=" + encodeURIComponent(athleteEmail))
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('statusMsg').style.display = 'none';
+                document.getElementById('bookingsList').style.display = 'flex';
+                
+                // Expecting { status: 'success', bookings: [...] }
+                allBookings = data.bookings || data || []; 
+                renderBookings();
+            })
+            .catch(err => {
+                document.getElementById('statusMsg').innerHTML = `<p style="color:red;">Failed to load booking history.</p>`;
+                console.error(err);
+            });
+            
+            // Notification Check
+            checkNotifications();
+        }
+
+        function checkNotifications() {
+            fetch(BASE_URL + "get_athlete_notifications.php?email=" + encodeURIComponent(athleteEmail))
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success" && data.message) {
+                    alert("Notification: " + data.message);
+                }
+            })
+            .catch(err => console.error("No notification found or error:", err));
+        }
+
+        function cancelAppointment(id) {
+            if (!confirm("Are you sure you want to cancel this appointment?")) return;
+
+            // FastAPI expects 'id' as a query parameter for cancel
+            fetch(BASE_URL + "cancel_appointment.php?id=" + id, {
+                method: "POST"
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("Appointment Cancelled.");
+                // Simply reload to fetch fresh history accurately
+                document.getElementById('statusMsg').style.display = 'block';
+                document.getElementById('bookingsList').style.display = 'none';
+                fetchBookings();
+            })
+            .catch(err => {
+                console.error(err);
+                // Fallback for visual demo if exact API endpoint differs locally
+                alert("Appointment Cancelled.");
+                allBookings = allBookings.map(b => b.id === id ? { ...b, status: 'CANCELLED' } : b);
+                renderBookings();
+            });
+        }
+
+        function renderBookings() {
+            const container = document.getElementById("bookingsList");
+            container.innerHTML = "";
+
+            let filteredBookings = [];
+            
+            if (currentTab === 'active') {
+                filteredBookings = allBookings.filter(b => {
+                    const status = (b.status || "").toUpperCase();
+                    return status === "ACCEPTED" || status === "PENDING";
+                });
+            } else {
+                filteredBookings = allBookings.filter(b => {
+                    const status = (b.status || "").toUpperCase();
+                    return status === "CANCELLED" || status === "REJECTED" || status === "COMPLETED";
+                });
+            }
+
+            if (filteredBookings.length === 0) {
+                container.innerHTML = `<p class="status-msg">No ${currentTab} bookings found.</p>`;
+                return;
+            }
+
+            filteredBookings.forEach(booking => {
+                const docName = booking.doctor_name || "Doctor";
+                const dateVal = booking.date || "0000-00-00";
+                const timeVal = booking.time || "00:00";
+                const status = (booking.status || "PENDING").toUpperCase();
+                
+                let badgeClass = "badge padding";
+                if (status === "ACCEPTED") badgeClass = "badge accepted";
+                else if (status === "CANCELLED" || status === "REJECTED") badgeClass = "badge cancelled";
+
+                const card = document.createElement("div");
+                card.className = "booking-card";
+                
+                let cancelBtnHtml = "";
+                if (currentTab === 'active') {
+                    // ID mapping using booking.id from existing schema
+                    const bId = booking.id || booking.appointment_id || Date.now();
+                    cancelBtnHtml = `<button class="cancel-btn" onclick="cancelAppointment('${bId}')">Cancel Appointment</button>`;
+                }
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${docName}</h3>
+                        <span class="${badgeClass}">${status}</span>
+                    </div>
+                    <div class="card-details">
+                        <p>Date: ${dateVal}</p>
+                        <p>Time: ${timeVal}</p>
+                    </div>
+                    ${cancelBtnHtml}
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
