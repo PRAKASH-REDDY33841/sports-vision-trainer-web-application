@@ -229,22 +229,13 @@ const eyeBtn = document.getElementById("eyeBtn");
 /* ========================= */
 
 function isValidEmail(value) {
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
-
-    if (!emailRegex.test(value)) return false;
-
-    const allowedDomains = [
-        "gmail.com",
-        "yahoo.com",
-        "outlook.com",
-        "hotmail.com",
-        "icloud.com"
-    ];
-
-    const domain = value.split("@")[1].toLowerCase();
-
-    return allowedDomains.includes(domain);
+    if (!value) return false;
+    if (value.length > 254) return false;
+    if (value.includes("..")) return false;
+    if (value.startsWith(".") || value.endsWith(".")) return false;
+    
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(value);
 }
 
 /* ========================= */
@@ -338,7 +329,7 @@ registerBtn.addEventListener("click", () => {
         emailError.innerText = "Email is required";
         valid = false;
     } else if (!isValidEmail(email.value.trim())) {
-        emailError.innerText = "Only Gmail, Yahoo, Outlook, Hotmail, or iCloud allowed";
+        emailError.innerText = "Please enter a valid email address";
         valid = false;
     }
 
@@ -364,7 +355,7 @@ registerBtn.addEventListener("click", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             username: username.value.trim(),
-            email: email.value.trim(),
+            email: email.value.trim().toLowerCase(),
             password: password.value.trim()
         })
     })

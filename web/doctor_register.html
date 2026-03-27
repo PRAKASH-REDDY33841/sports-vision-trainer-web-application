@@ -274,6 +274,16 @@
             authError.innerText = "";
         }
 
+        function isValidEmail(value) {
+            if (!value) return false;
+            if (value.length > 254) return false;
+            if (value.includes("..")) return false;
+            if (value.startsWith(".") || value.endsWith(".")) return false;
+            
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return emailRegex.test(value);
+        }
+
         Object.values(inputs).forEach(input => {
             input.addEventListener("input", () => {
                 const key = Object.keys(inputs).find(k => inputs[k] === input);
@@ -317,7 +327,15 @@
             if (!vals.fullName) { errors.fullName.innerText = "Required"; wrappers.fullName.classList.add("error"); valid = false; }
             if (!vals.license) { errors.license.innerText = "Required"; wrappers.license.classList.add("error"); valid = false; }
             if (!vals.clinic) { errors.clinic.innerText = "Required"; wrappers.clinic.classList.add("error"); valid = false; }
-            if (!vals.email) { errors.email.innerText = "Required"; wrappers.email.classList.add("error"); valid = false; }
+            if (!vals.email) { 
+                errors.email.innerText = "Required"; 
+                wrappers.email.classList.add("error"); 
+                valid = false; 
+            } else if (!isValidEmail(vals.email)) {
+                errors.email.innerText = "Please enter a valid email address";
+                wrappers.email.classList.add("error");
+                valid = false;
+            }
             if (!vals.password) { errors.password.innerText = "Required"; wrappers.password.classList.add("error"); valid = false; }
             else {
                 const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/;
@@ -348,7 +366,7 @@
                     full_name: vals.fullName,
                     medical_license: vals.license,
                     hospital_name: vals.clinic,
-                    clinic_email: vals.email,
+                    clinic_email: vals.email.toLowerCase(),
                     password: vals.password
                 })
             })
