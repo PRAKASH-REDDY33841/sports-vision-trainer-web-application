@@ -8,7 +8,7 @@ if (!email) {
 
 function loadDashboardProfile() {
 
-    fetch(BASE_URL + "get_profile.php?email=" + email)
+    fetch(BASE_URL + "get_profile?email=" + email)
         .then(res => res.json())
         .then(data => {
 

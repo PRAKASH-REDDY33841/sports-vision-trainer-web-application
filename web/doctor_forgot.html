@@ -216,7 +216,7 @@
             submitBtn.style.opacity = "0.7";
 
             // Using the doctor_send_otp.php endpoint
-            fetch(BASE_URL + "doctor_send_otp.php", {
+            fetch(BASE_URL + "doctor_send_otp", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: email })

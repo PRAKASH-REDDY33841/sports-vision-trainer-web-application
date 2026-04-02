@@ -18,7 +18,7 @@ let selectedFile = null;
 /* ================= LOAD PROFILE ================= */
 
 function loadProfile() {
-    fetch(BASE_URL + "get_profile.php?email=" + email)
+    fetch(BASE_URL + "get_profile?email=" + email)
         .then(res => res.json())
         .then(data => {
 
@@ -70,7 +70,7 @@ saveBtn.addEventListener("click", () => {
         formData.append("photo", selectedFile);
     }
 
-    fetch(BASE_URL + "save_profile.php", {
+    fetch(BASE_URL + "save_profile", {
         method: "POST",
         body: formData
     })

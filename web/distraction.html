@@ -323,6 +323,7 @@ padding:12px;
 </div>
 </div>
 
+<script src="js/api.js"></script>
 <script>
 
 /* ---------- STATE ---------- */
@@ -460,27 +461,44 @@ window.location.href="sports.html"
 /* ---------- RESULT ---------- */
 
 function endGame(){
-gameOver=true
-clearInterval(spawnInterval)
+    gameOver=true;
+    clearInterval(spawnInterval);
 
-let avg = score===0?0:Math.floor(reactionTotal/score)
-let finalScore =
-score*150 + combo*10 - wrong*40 - Math.floor(avg/6)
+    let avg = score===0?0:Math.floor(reactionTotal/score);
+    let finalScore = score*150 + combo*10 - wrong*40 - Math.floor(avg/6);
 
-const overlay=document.createElement("div")
-overlay.className="report-overlay"
-overlay.innerHTML=`
-<div class="report-card">
-<h2>Performance Report 🎯</h2>
-<div class="report-row"><span>Hits</span><span>${score}</span></div>
-<div class="report-row"><span>Wrong</span><span>${wrong}</span></div>
-<div class="report-row"><span>Avg Reaction</span><span>${avg} ms</span></div>
-<div class="report-row"><span>Score</span><span>${finalScore}</span></div>
-<button class="primary-btn" onclick="location.reload()">Start Again</button>
-<button class="outline-btn" onclick="goHome()">Back To Home</button>
-</div>
-`
-document.body.appendChild(overlay)
+    const sessionData = {
+        gameType: "distraction",
+        score: finalScore,
+        avgReaction: avg,
+        wrong: wrong,
+        timestamp: Date.now()
+    };
+
+    // Save to local storage
+    let sessions = JSON.parse(localStorage.getItem("sessions")) || [];
+    sessions.push(sessionData);
+    localStorage.setItem("sessions", JSON.stringify(sessions));
+
+    // Save to backend
+    if (typeof saveSession === "function") {
+        saveSession(sessionData);
+    }
+
+    const overlay=document.createElement("div");
+    overlay.className="report-overlay";
+    overlay.innerHTML=`
+    <div class="report-card">
+    <h2>Performance Report 🎯</h2>
+    <div class="report-row"><span>Hits</span><span>${score}</span></div>
+    <div class="report-row"><span>Wrong</span><span>${wrong}</span></div>
+    <div class="report-row"><span>Avg Reaction</span><span>${avg} ms</span></div>
+    <div class="report-row"><span>Score</span><span>${finalScore}</span></div>
+    <button class="primary-btn" onclick="location.reload()">Start Again</button>
+    <button class="outline-btn" onclick="goHome()">Back To Home</button>
+    </div>
+    `;
+    document.body.appendChild(overlay);
 }
 
 function goHome(){

@@ -395,7 +395,7 @@
         function fetchDoctorProfile() {
             if (typeof BASE_URL === 'undefined') return;
 
-            fetch(BASE_URL + "get_doctor_profile.php?email=" + encodeURIComponent(doctorEmail))
+            fetch(BASE_URL + "get_doctor_profile?email=" + encodeURIComponent(doctorEmail))
             .then(res => res.json())
             .then(data => {
                 if (data && data.username) {
@@ -434,7 +434,7 @@
         function fetchDoctorHistory() {
             if (typeof BASE_URL === 'undefined') return;
 
-            fetch(BASE_URL + "get_doctor_history.php?email=" + encodeURIComponent(doctorEmail))
+            fetch(BASE_URL + "get_doctor_history?email=" + encodeURIComponent(doctorEmail))
             .then(res => res.json())
             .then(data => {
                 const container = document.getElementById('historyContainer');

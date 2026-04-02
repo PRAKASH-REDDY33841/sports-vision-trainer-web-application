@@ -417,7 +417,7 @@
         function fetchDoctorProfile() {
             if (typeof BASE_URL === 'undefined') return;
 
-            fetch(BASE_URL + "get_doctor_profile.php?email=" + encodeURIComponent(doctorEmail))
+            fetch(BASE_URL + "get_doctor_profile?email=" + encodeURIComponent(doctorEmail))
             .then(res => res.json())
             .then(data => {
                 if (data && data.username) {
@@ -446,7 +446,7 @@
         function fetchDoctorAppointments() {
             if (typeof BASE_URL === 'undefined') return;
 
-            fetch(BASE_URL + "get_doctor_appointments.php?email=" + encodeURIComponent(doctorEmail))
+            fetch(BASE_URL + "get_doctor_appointments?email=" + encodeURIComponent(doctorEmail))
             .then(res => res.json())
             .then(data => {
                 if (data.status === "success" && data.appointments) {
@@ -470,7 +470,7 @@
         function fetchAcceptedAppointments() {
             if (typeof BASE_URL === 'undefined') return;
 
-            fetch(BASE_URL + "get_accepted_appointments.php?email=" + encodeURIComponent(doctorEmail))
+            fetch(BASE_URL + "get_accepted_appointments?email=" + encodeURIComponent(doctorEmail))
             .then(res => res.json())
             .then(data => {
                 const container = document.getElementById('alertsContainer');
@@ -538,7 +538,7 @@
         }
 
         function updateApptStatus(appId, status) {
-            fetch(BASE_URL + "update_appointment_status.php", {
+            fetch(BASE_URL + "update_appointment_status", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: appId, status: status.toUpperCase() })

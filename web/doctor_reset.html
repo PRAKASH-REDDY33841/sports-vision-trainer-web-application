@@ -272,7 +272,7 @@
             submitBtn.style.opacity = "0.7";
 
             // Using the doctor_reset_password_final.php endpoint
-            fetch(BASE_URL + "doctor_reset_password_final.php", {
+            fetch(BASE_URL + "doctor_reset_password_final", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: resetEmail, password: password })

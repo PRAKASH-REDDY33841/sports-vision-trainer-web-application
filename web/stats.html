@@ -291,6 +291,7 @@ Track your reaction time improvement and training progress.
 
 </div>
 
+<script src="js/api.js"></script>
 <script>
 
 /* GET URL PARAMETERS */
@@ -314,165 +315,118 @@ window.location.href = "home.html"
 
 /* LOAD SESSIONS */
 
-const allSessions = JSON.parse(localStorage.getItem("sessions")) || []
+async function initStats() {
+    const email = localStorage.getItem("userEmail");
+    const response = await getSessions(email);
+    const allSessions = response.sessions || [];
 
-const sessions = game
-? allSessions.filter(s => s.gameType === game)
-: allSessions
+    const sessions = game
+        ? allSessions.filter(s => s.gameType === game)
+        : allSessions;
 
-const container = document.querySelector(".container")
+    const container = document.querySelector(".container");
 
-/* EMPTY STATE */
+    /* EMPTY STATE */
 
-if(sessions.length === 0){
+    if (sessions.length === 0) {
+        container.innerHTML = `
+        <div class="empty-state">
+        <h2>📊 No Statistics Yet</h2>
+        <p class="welcome-text">
+        Play your first drill to unlock performance insights and analytics.
+        </p>
+        <button onclick="window.location.href='sports.html'">Start Training</button>
+        </div>
+        `;
+        return;
+    }
 
-container.innerHTML = `
-<div class="empty-state">
+    /* NORMAL STATS */
 
-<h2>📊 No Statistics Yet</h2>
+    let avgReaction = Math.round(
+        sessions.reduce((sum, s) => sum + s.avgReaction, 0) / sessions.length
+    );
 
-<p class="welcome-text">
-Play your first drill to unlock performance insights and analytics.
-</p>
+    const hits = sessions.reduce((sum, s) => sum + (s.score / 120), 0); // Normalized hits
+    const misses = sessions.reduce((sum, s) => sum + s.wrong, 0);
 
-<button onclick="startTraining()">Start Training</button>
+    let accuracy = hits + misses > 0 ? Math.round((hits / (hits + misses)) * 100) : 0;
+    let bestScore = Math.max(...sessions.map(s => s.score));
 
-</div>
-`
+    document.querySelectorAll(".kpi-value")[0].innerText = avgReaction + " ms";
+    document.querySelectorAll(".kpi-value")[1].innerText = accuracy + "%";
+    document.querySelectorAll(".kpi-value")[2].innerText = bestScore;
 
-function startTraining(){
-window.location.href="sports.html"
+    const lastSessions = sessions.slice(-7);
+    const scores = lastSessions.map(s => s.score);
+    const reactions = lastSessions.map(s => s.avgReaction);
+    const labels = lastSessions.map((s, i) => "S" + (i + 1));
+
+    /* BAR CHART */
+
+    new Chart(document.getElementById("scoreChart"), {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: scores,
+                backgroundColor: "#6366f1",
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            animation: { duration: 1500 }
+        }
+    });
+
+    /* LINE CHART */
+
+    new Chart(document.getElementById("reactionChart"), {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: reactions,
+                borderColor: "#ff6584",
+                backgroundColor: "rgba(255,101,132,0.15)",
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            animation: { duration: 1500 }
+        }
+    });
+
+    /* SESSION HISTORY */
+
+    const historyContainer = document.getElementById("historyList");
+    historyContainer.innerHTML = "";
+
+    sessions.slice().reverse().forEach(session => {
+        const date = new Date(session.timestamp).toLocaleString();
+        const card = document.createElement("div");
+        card.className = "session-card";
+        card.innerHTML = `
+            <div class="session-left">
+                <div class="session-game">${session.gameType.toUpperCase()}</div>
+                <div class="session-date">${date}</div>
+            </div>
+            <div class="session-stats">
+                Score: ${session.score}<br>
+                Reaction: ${session.avgReaction} ms<br>
+                Mistakes: ${session.wrong}
+            </div>
+        `;
+        historyContainer.appendChild(card);
+    });
 }
 
-}
-
-/* NORMAL STATS */
-
-else{
-
-let avgReaction =
-Math.round(
-sessions.reduce((sum,s)=>sum+s.avgReaction,0)/sessions.length
-)
-
-const hits =
-sessions.reduce((sum,s)=>sum+(s.score/100),0)
-
-const misses =
-sessions.reduce((sum,s)=>sum+s.wrong,0)
-
-let accuracy =
-Math.round((hits/(hits+misses))*100)
-
-let bestScore =
-Math.max(...sessions.map(s=>s.score))
-
-document.querySelectorAll(".kpi-value")[0].innerText =
-avgReaction + " ms"
-
-document.querySelectorAll(".kpi-value")[1].innerText =
-accuracy + "%"
-
-document.querySelectorAll(".kpi-value")[2].innerText =
-bestScore
-
-const lastSessions = sessions.slice(-7)
-
-const scores = lastSessions.map(s=>s.score)
-const reactions = lastSessions.map(s=>s.avgReaction)
-const labels = lastSessions.map((s,i)=>"S"+(i+1))
-
-/* BAR CHART */
-
-new Chart(document.getElementById("scoreChart"),{
-
-type:"bar",
-
-data:{
-labels:labels,
-
-datasets:[{
-data:scores,
-backgroundColor:"#6366f1",
-borderRadius:8
-}]
-},
-
-options:{
-responsive:true,
-plugins:{legend:{display:false}},
-animation:{duration:1500}
-}
-
-})
-
-/* LINE CHART */
-
-new Chart(document.getElementById("reactionChart"),{
-
-type:"line",
-
-data:{
-labels:labels,
-
-datasets:[{
-data:reactions,
-borderColor:"#ff6584",
-backgroundColor:"rgba(255,101,132,0.15)",
-fill:true,
-tension:0.4
-}]
-},
-
-options:{
-responsive:true,
-plugins:{legend:{display:false}},
-animation:{duration:1500}
-}
-
-})
-
-/* SESSION HISTORY */
-
-const historyContainer =
-document.getElementById("historyList")
-
-sessions.slice().reverse().forEach(session=>{
-
-const date =
-new Date(session.timestamp)
-.toLocaleString()
-
-const card = document.createElement("div")
-card.className = "session-card"
-
-card.innerHTML = `
-
-<div class="session-left">
-
-<div class="session-game">
-${session.gameType.toUpperCase()}
-</div>
-
-<div class="session-date">
-${date}
-</div>
-
-</div>
-
-<div class="session-stats">
-Score: ${session.score}<br>
-Reaction: ${session.avgReaction} ms<br>
-Mistakes: ${session.wrong}
-</div>
-
-`
-
-historyContainer.appendChild(card)
-
-})
-
-}
+initStats();
 
 </script>
 

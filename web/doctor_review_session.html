@@ -319,7 +319,7 @@
         function fetchSessions(athleteEmail) {
             if (typeof BASE_URL === 'undefined') return;
 
-            fetch(BASE_URL + "get_sessions.php?email=" + encodeURIComponent(athleteEmail))
+            fetch(BASE_URL + "get_sessions?email=" + encodeURIComponent(athleteEmail))
             .then(res => res.json())
             .then(data => {
                 const container = document.getElementById("breakdownContainer");

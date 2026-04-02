@@ -1,11 +1,11 @@
-const BASE_URL = "http://10.118.245.111:8000/";
+const BASE_URL = "http://180.235.121.253:8141/";
 
 function login() {
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    fetch(BASE_URL + "login.php", {
+    fetch(BASE_URL + "login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -44,7 +44,7 @@ function loadProfile() {
         return;
     }
 
-    fetch(BASE_URL + "get_profile.php?email=" + email)
+    fetch(BASE_URL + "get_profile?email=" + email)
     .then(res => res.json())
     .then(data => {
 
@@ -105,7 +105,7 @@ function register() {
 
     if (hasError) return;
 
-    fetch(BASE_URL + "register.php", {
+    fetch(BASE_URL + "register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -147,7 +147,7 @@ function sendOtp() {
         return;
     }
 
-    fetch(BASE_URL + "send_otp.php", {
+    fetch(BASE_URL + "send_otp", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -201,7 +201,7 @@ function verifyOtp() {
         return;
     }
 
-    fetch(BASE_URL + "verify_otp.php", {
+    fetch(BASE_URL + "verify_otp", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -263,7 +263,7 @@ function resetPassword() {
 
     if (hasError) return;
 
-    fetch(BASE_URL + "reset_password_final.php", {
+    fetch(BASE_URL + "reset_password_final", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -318,3 +318,36 @@ function togglePassword() {
         eyeBtn.classList.add("fa-eye");
     }
 }
+
+function saveSession(sessionData) {
+    const email = localStorage.getItem("userEmail");
+    if (!email) {
+        console.warn("No user logged in, session not saved to backend");
+        return Promise.resolve();
+    }
+    return fetch(BASE_URL + "save_session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            email: email,
+            gameType: sessionData.gameType,
+            score: sessionData.score,
+            avgReaction: sessionData.avgReaction,
+            wrong: sessionData.wrong,
+            timestamp: sessionData.timestamp
+        })
+    })
+    .then(res => res.json())
+    .catch(err => console.error("Failed to save session to backend:", err));
+}
+
+function getSessions(email) {
+    if (!email) return Promise.resolve({ sessions: [] });
+    return fetch(BASE_URL + "get_sessions?email=" + email)
+    .then(res => res.json())
+    .catch(err => {
+        console.error("Failed to fetch sessions from backend:", err);
+        return { sessions: [] };
+    });
+}
+

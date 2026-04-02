@@ -316,7 +316,7 @@
 
         // Attempt to fetch profile details using the API base URL from api.js
         if (athleteEmail && typeof BASE_URL !== 'undefined') {
-            fetch(BASE_URL + "get_profile.php?email=" + encodeURIComponent(athleteEmail))
+            fetch(BASE_URL + "get_profile?email=" + encodeURIComponent(athleteEmail))
             .then(res => res.json())
             .then(data => {
                 if (data.username) {
@@ -363,7 +363,7 @@
                 return;
             }
 
-            fetch(BASE_URL + "get_doctors.php")
+            fetch(BASE_URL + "get_doctors")
             .then(res => res.json())
             .then(data => {
                 document.getElementById('statusMsg').style.display = 'none';
@@ -435,6 +435,9 @@
             document.getElementById("bookTime").value = "";
             document.getElementById("bookPhone").value = "";
             
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById("bookDate").setAttribute("min", today);
+            
             document.getElementById("bookingModal").classList.add("active");
         }
 
@@ -449,6 +452,15 @@
 
             if (!date || !time || !phone) {
                 alert("Please fill all fields");
+                return;
+            }
+
+            // --- PAST DATE & TIME VALIDATION ---
+            const now = new Date();
+            const selectedDateTime = new Date(date + "T" + time);
+
+            if (selectedDateTime < now) {
+                alert("It is not possible to book an appointment in the past. Please select a future date and time.");
                 return;
             }
 
@@ -469,7 +481,7 @@
             };
 
             // Using standard book_appointment endpoint string like Android API
-            fetch(BASE_URL + "book_appointment.php", {
+            fetch(BASE_URL + "book_appointment", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(reqBody)

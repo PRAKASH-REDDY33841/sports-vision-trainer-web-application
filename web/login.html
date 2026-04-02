@@ -213,7 +213,7 @@ loginBtn.addEventListener("click", () => {
 
     if (!valid) return;
 
-    fetch(BASE_URL + "login.php", {
+    fetch(BASE_URL + "login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

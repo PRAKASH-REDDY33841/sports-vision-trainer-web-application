@@ -359,7 +359,7 @@
             registerBtn.style.opacity = "0.7";
 
             // Using the doctor_register.php endpoint
-            fetch(BASE_URL + "doctor_register.php", {
+            fetch(BASE_URL + "doctor_register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

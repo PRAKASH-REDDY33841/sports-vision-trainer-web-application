@@ -338,6 +338,7 @@ font-size:14px;
 </div>
 </div>
 
+<script src="js/api.js"></script>
 <script>
 
 let sessionSeconds=60
@@ -444,28 +445,44 @@ window.location.href="sports.html"
 }
 
 function endGame(){
-gameOver=true
-clearTimeout(spawnTimeout)
+    gameOver=true;
+    clearTimeout(spawnTimeout);
 
-let avg=score===0?0:Math.floor(reactionTotal/score)
-let finalScore=score*120 - misses*40 - Math.floor(avg/5)
+    let avg=score===0?0:Math.floor(reactionTotal/score);
+    let finalScore=score*120 - misses*40 - Math.floor(avg/5);
 
-const overlay=document.createElement("div")
-overlay.className="report-overlay"
-overlay.innerHTML=`
-<div class="report-card">
-<h2>Performance Report 🎯</h2>
+    const sessionData = {
+        gameType: "arrowrush",
+        score: finalScore,
+        avgReaction: avg,
+        wrong: misses,
+        timestamp: Date.now()
+    };
 
-<div class="report-row"><span>Hits</span><span>${score}</span></div>
-<div class="report-row"><span>Misses</span><span>${misses}</span></div>
-<div class="report-row"><span>Avg Reaction</span><span>${avg} ms</span></div>
-<div class="report-row"><span>Score</span><span>${finalScore}</span></div>
+    // Save to local storage for quick access
+    let sessions = JSON.parse(localStorage.getItem("sessions")) || [];
+    sessions.push(sessionData);
+    localStorage.setItem("sessions", JSON.stringify(sessions));
 
-<button class="primary-btn" onclick="location.reload()">Start Again</button>
-<button class="outline-btn" onclick="goHome()">Back To Home</button>
-</div>
-`
-document.body.appendChild(overlay)
+    // Save to backend for syncing
+    if (typeof saveSession === "function") {
+        saveSession(sessionData);
+    }
+
+    const overlay=document.createElement("div");
+    overlay.className="report-overlay";
+    overlay.innerHTML=`
+    <div class="report-card">
+    <h2>Performance Report 🎯</h2>
+    <div class="report-row"><span>Hits</span><span>${score}</span></div>
+    <div class="report-row"><span>Misses</span><span>${misses}</span></div>
+    <div class="report-row"><span>Avg Reaction</span><span>${avg} ms</span></div>
+    <div class="report-row"><span>Score</span><span>${finalScore}</span></div>
+    <button class="primary-btn" onclick="location.reload()">Start Again</button>
+    <button class="outline-btn" onclick="goHome()">Back To Home</button>
+    </div>
+    `;
+    document.body.appendChild(overlay);
 }
 
 startTimer()

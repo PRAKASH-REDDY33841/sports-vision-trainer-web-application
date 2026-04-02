@@ -172,6 +172,7 @@ button{
     </div>
 </div>
 
+<script src="js/api.js"></script>
 <script>
 
 /* ================= READ URL PARAMETERS ================= */
@@ -233,15 +234,20 @@ improvement > 0
 
 /* ================= SAVE SESSION AFTER CHECK ================= */
 
-sessions.push({
-gameType: game,
-score: score,
-avgReaction: avg,
-wrong: misses,
-timestamp: Date.now()
-});
+const sessionData = {
+    gameType: game,
+    score: score,
+    avgReaction: avg,
+    wrong: misses,
+    timestamp: Date.now()
+};
 
+sessions.push(sessionData);
 localStorage.setItem("sessions", JSON.stringify(sessions));
+
+if (typeof saveSession === "function") {
+    saveSession(sessionData);
+}
 
 /* ================= BUTTONS ================= */
 

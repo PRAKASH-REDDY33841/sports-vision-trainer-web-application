@@ -224,7 +224,7 @@
             }
 
             // Using standard get_athlete_bookings endpoint for web, mapped same as android
-            fetch(BASE_URL + "get_athlete_bookings.php?email=" + encodeURIComponent(athleteEmail))
+            fetch(BASE_URL + "get_athlete_bookings?email=" + encodeURIComponent(athleteEmail))
             .then(res => res.json())
             .then(data => {
                 document.getElementById('statusMsg').style.display = 'none';
@@ -244,7 +244,7 @@
         }
 
         function checkNotifications() {
-            fetch(BASE_URL + "get_athlete_notifications.php?email=" + encodeURIComponent(athleteEmail))
+            fetch(BASE_URL + "get_athlete_notifications?email=" + encodeURIComponent(athleteEmail))
             .then(res => res.json())
             .then(data => {
                 if (data.status === "success" && data.message) {
@@ -258,7 +258,7 @@
             if (!confirm("Are you sure you want to cancel this appointment?")) return;
 
             // FastAPI expects 'id' as a query parameter for cancel
-            fetch(BASE_URL + "cancel_appointment.php?id=" + id, {
+            fetch(BASE_URL + "cancel_appointment?id=" + id, {
                 method: "POST"
             })
             .then(res => res.json())

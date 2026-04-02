@@ -226,7 +226,7 @@
             submitBtn.style.opacity = "0.7";
 
             // Using the doctor_verify_otp.php endpoint
-            fetch(BASE_URL + "doctor_verify_otp.php", {
+            fetch(BASE_URL + "doctor_verify_otp", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: resetEmail, otp: otp })
