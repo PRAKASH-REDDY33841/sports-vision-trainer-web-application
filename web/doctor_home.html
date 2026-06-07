@@ -335,7 +335,7 @@
 
         <!-- Greeting -->
         <div class="greeting-sub">MORNING, CLINICIAN</div>
-        <h1 class="greeting-main">Welcome, Dr. <span id="welcomeName">-</span></h1>
+        <h1 class="greeting-main">Welcome, <span id="welcomeName">-</span></h1>
 
         <!-- Cohort Card -->
         <div class="cohort-card">
@@ -427,22 +427,26 @@
             .then(data => {
                 if (data && data.username) {
                     const name = data.username;
+                    let displayName = name;
+                    if (!displayName.toLowerCase().startsWith("dr.") && !displayName.toLowerCase().startsWith("dr ")) {
+                        displayName = "Dr. " + displayName;
+                    }
                     document.getElementById('topName').innerText = name;
-                    document.getElementById('welcomeName').innerText = name;
+                    document.getElementById('welcomeName').innerText = displayName;
                     
                     if (data.profile_image) {
                         profileImgElement.src = data.profile_image;
                     }
                 } else {
                     document.getElementById('topName').innerText = "Doctor";
-                    document.getElementById('welcomeName').innerText = "Doctor";
+                    document.getElementById('welcomeName').innerText = "Dr. Doctor";
                 }
             })
             .catch(err => {
                 console.error("Profile fetch error:", err);
                 // Fallbacks so it looks like the screenshot if offline 
-                document.getElementById('topName').innerText = "Dr prakash";
-                document.getElementById('welcomeName').innerText = "Dr prakash";
+                document.getElementById('topName').innerText = "Dr. Prakash";
+                document.getElementById('welcomeName').innerText = "Dr. Prakash";
             });
         }
 
