@@ -1,4 +1,4 @@
-const BASE_URL = "http://180.235.121.253:8141/";
+const BASE_URL = "http://localhost:8141/";
 
 function login() {
 
@@ -350,4 +350,4 @@ function getSessions(email) {
         return { sessions: [] };
     });
 }
-
+
