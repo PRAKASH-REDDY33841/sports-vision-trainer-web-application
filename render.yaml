@@ -1,4 +1,5 @@
 services:
   - type: static
     name: sports-vision-trainer-frontend
+    plan: free
     staticPublishDir: web
