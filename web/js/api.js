@@ -161,6 +161,10 @@ function sendOtp() {
 
                 localStorage.setItem("resetEmail", email);
 
+                if (data.sandbox_otp) {
+                    alert("Resend Sandbox Mode: Email delivery restricted. For testing/demo, your OTP is: " + data.sandbox_otp);
+                }
+
                 successBox.innerHTML =
                     `<div class="success-box">
                     <i class="fa-solid fa-circle-check"></i>

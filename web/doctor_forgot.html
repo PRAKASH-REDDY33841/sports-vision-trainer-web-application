@@ -225,6 +225,9 @@
             .then(data => {
                 if (data.status === "success") {
                     localStorage.setItem("resetEmail", email);
+                    if (data.sandbox_otp) {
+                        alert("Resend Sandbox Mode: Email delivery restricted. For testing/demo, your OTP is: " + data.sandbox_otp);
+                    }
                     window.location.href = "doctor_verify.html";
                 } else {
                     authError.innerText = data.msg || data.message || "Failed to send OTP";
