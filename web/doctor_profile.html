@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Doctor Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #FDF9F1;
+            color: #2D1E16;
+            display: flex;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .profile-card {
+            width: 100%;
+            max-width: 480px;
+            background: #F9F1E8;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            color: #2D1E16;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            color: #8C5C3D;
+            transform: scale(1.1);
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            margin-top: 10px;
+        }
+
+        .profile-header h2 {
+            margin: 0;
+            font-weight: 800;
+            font-size: 26px;
+            letter-spacing: -0.5px;
+        }
+
+        .profile-header button {
+            background: #2D1E16;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .profile-header button:hover {
+            opacity: 0.9;
+        }
+
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar-section img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #2D1E16;
+            background: #DCCCBE;
+        }
+
+        .avatar-section button {
+            margin-top: 12px;
+            background: #8C5C3D;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .avatar-section button:hover {
+            opacity: 0.9;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #8C5C3D;
+            display: block;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .field input,
+        .field textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid #EBE4D8;
+            font-size: 15px;
+            background: #FFFFFF;
+            color: #2D1E16;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        .field input:focus,
+        .field textarea:focus {
+            border-color: #2D1E16;
+        }
+
+        .field input:disabled,
+        .field textarea:disabled {
+            background: #F4ECE1;
+            color: #777;
+            cursor: not-allowed;
+        }
+
+        #saveBtn {
+            width: 100%;
+            background: #2D1E16;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 800;
+            margin-top: 10px;
+            display: none;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #saveBtn:hover {
+            opacity: 0.95;
+        }
+
+        #message {
+            margin-top: 16px;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        #message.success {
+            color: #4CAF50;
+        }
+
+        #message.error {
+            color: #E53935;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-card">
+        <div class="back-btn" onclick="window.location.href='doctor_settings.html'">
+            <i class="fa-solid fa-arrow-left"></i>
+        </div>
+
+        <div class="profile-header">
+            <h2>Doctor Profile</h2>
+            <button id="editBtn">Edit</button>
+        </div>
+
+        <div class="avatar-section">
+            <img id="profileImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23EBE4D8'/%3E%3Ctext x='50' y='55' font-size='40' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%232D1E16'%3E%26%23128100%3B%3C/text%3E%3C/svg%3E">
+            <br>
+            <button id="changePhotoBtn" style="display:none;">Change Photo</button>
+            <input type="file" id="imageInput" hidden>
+        </div>
+
+        <div class="field">
+            <label>Full Name</label>
+            <input type="text" id="username" disabled>
+        </div>
+
+        <div class="field">
+            <label>Bio</label>
+            <textarea id="bio" rows="3" disabled placeholder="Write a short professional bio..."></textarea>
+        </div>
+
+        <button id="saveBtn">Save Changes</button>
+        <div id="message"></div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const editBtn = document.getElementById("editBtn");
+        const saveBtn = document.getElementById("saveBtn");
+        const usernameInput = document.getElementById("username");
+        const bioInput = document.getElementById("bio");
+        const changePhotoBtn = document.getElementById("changePhotoBtn");
+        const imageInput = document.getElementById("imageInput");
+        const profileImage = document.getElementById("profileImage");
+        const message = document.getElementById("message");
+
+        let editMode = false;
+        let selectedFile = null;
+
+        const email = localStorage.getItem("userEmail") || "";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!email || localStorage.getItem("userRole") !== "doctor") {
+                window.location.href = "login.html";
+                return;
+            }
+            loadProfile();
+        });
+
+        /* LOAD PROFILE */
+        function loadProfile() {
+            if (typeof BASE_URL === 'undefined') return;
+
+            fetch(BASE_URL + "get_doctor_profile?email=" + encodeURIComponent(email))
+                .then(res => res.json())
+                .then(data => {
+                    usernameInput.value = data.username || "";
+                    bioInput.value = data.bio || "";
+                    if (data.profile_image) {
+                        profileImage.src = data.profile_image + "?t=" + new Date().getTime();
+                    }
+                })
+                .catch(err => {
+                    console.error("Profile load error:", err);
+                    message.className = "error";
+                    message.innerText = "Failed to load profile details";
+                });
+        }
+
+        /* EDIT BUTTON */
+        editBtn.addEventListener("click", () => {
+            editMode = !editMode;
+
+            usernameInput.disabled = !editMode;
+            bioInput.disabled = !editMode;
+
+            saveBtn.style.display = editMode ? "block" : "none";
+            changePhotoBtn.style.display = editMode ? "inline-block" : "none";
+
+            editBtn.innerText = editMode ? "Cancel" : "Edit";
+            message.innerText = "";
+        });
+
+        /* IMAGE PICK */
+        changePhotoBtn.addEventListener("click", () => {
+            imageInput.click();
+        });
+
+        imageInput.addEventListener("change", (e) => {
+            selectedFile = e.target.files[0];
+            if (selectedFile) {
+                profileImage.src = URL.createObjectURL(selectedFile);
+            }
+        });
+
+        /* SAVE PROFILE */
+        saveBtn.addEventListener("click", () => {
+            if (!usernameInput.value.trim()) {
+                message.className = "error";
+                message.innerText = "Full Name cannot be empty";
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("email", email);
+            formData.append("name", usernameInput.value.trim());
+            formData.append("bio", bioInput.value.trim());
+
+            if (selectedFile) {
+                formData.append("photo", selectedFile);
+            }
+
+            message.className = "";
+            message.innerText = "Saving changes...";
+            saveBtn.disabled = true;
+
+            fetch(BASE_URL + "save_doctor_profile", {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                saveBtn.disabled = false;
+                if (data.status === "success") {
+                    message.className = "success";
+                    message.innerText = "Profile updated successfully ✓";
+
+                    editMode = false;
+                    usernameInput.disabled = true;
+                    bioInput.disabled = true;
+
+                    saveBtn.style.display = "none";
+                    changePhotoBtn.style.display = "none";
+                    editBtn.innerText = "Edit";
+                } else {
+                    message.className = "error";
+                    message.innerText = data.message || "Update failed ❌";
+                }
+            })
+            .catch(err => {
+                console.error("Save profile error:", err);
+                saveBtn.disabled = false;
+                message.className = "error";
+                message.innerText = "Server connection failed ❌";
+            });
+        });
+    </script>
+</body>
+</html>

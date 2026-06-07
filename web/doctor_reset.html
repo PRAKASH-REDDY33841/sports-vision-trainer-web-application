@@ -112,6 +112,18 @@
             padding-left: 12px;
         }
 
+        .match-icon {
+            position: absolute;
+            right: 16px;
+            display: none;
+        }
+
+        /* Hide Microsoft Edge native password reveal button */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none;
+        }
+
         .error-msg {
             color: #ff4d4f;
             font-size: 12px;
@@ -186,6 +198,9 @@
             <label class="input-label">CONFIRM PASSWORD</label>
             <div class="input-wrapper" id="confirmWrapper">
                 <input type="password" id="confirm" placeholder="••••••••">
+                <span class="match-icon" id="matchIcon">
+                    <i class="fa-solid fa-check" style="color: #4CAF50;"></i>
+                </span>
             </div>
             <div class="error-msg" id="confirmError"></div>
         </div>
@@ -240,8 +255,38 @@
             successMsg.innerText = "";
         }
 
-        passInput.addEventListener("input", clearErrors);
-        confirmInput.addEventListener("input", clearErrors);
+        const matchIcon = document.getElementById("matchIcon");
+
+        function checkPasswordMatch() {
+            const pass = passInput.value;
+            const conf = confirmInput.value;
+
+            if (conf === "") {
+                matchIcon.style.display = "none";
+                confirmError.innerText = "";
+                confirmWrapper.classList.remove("error");
+                return;
+            }
+
+            if (pass === conf) {
+                matchIcon.style.display = "block";
+                confirmError.innerText = "";
+                confirmWrapper.classList.remove("error");
+            } else {
+                matchIcon.style.display = "none";
+                confirmError.innerText = "Passwords do not match";
+                confirmWrapper.classList.add("error");
+            }
+        }
+
+        passInput.addEventListener("input", () => {
+            clearErrors();
+            checkPasswordMatch();
+        });
+        confirmInput.addEventListener("input", () => {
+            clearErrors();
+            checkPasswordMatch();
+        });
 
         passInput.addEventListener("blur", () => {
             if(!passInput.value.trim()) { passError.innerText = "Required"; passWrapper.classList.add("error"); }

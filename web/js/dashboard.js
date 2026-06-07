@@ -20,7 +20,11 @@ function loadDashboardProfile() {
             const profileInitial = document.getElementById("profileInitial");
 
             if (data.profile_image) {
-
+                profileImg.onerror = function() {
+                    profileImg.style.display = "none";
+                    profileInitial.innerText = username.charAt(0).toUpperCase();
+                    profileInitial.style.display = "block";
+                };
                 profileImg.src = data.profile_image + "?t=" + new Date().getTime();
                 profileImg.style.display = "block";
                 profileInitial.style.display = "none";

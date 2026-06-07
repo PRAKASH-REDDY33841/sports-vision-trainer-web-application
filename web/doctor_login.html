@@ -179,6 +179,12 @@
             opacity: 0.9;
         }
 
+        /* Hide Microsoft Edge native password reveal button */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none;
+        }
+
         .footer-links {
             margin-top: 40px;
             font-size: 13px;

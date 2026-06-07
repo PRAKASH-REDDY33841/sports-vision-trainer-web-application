@@ -327,6 +327,10 @@ let selectedFile = null;
 
 const email = localStorage.getItem("userEmail");
 
+profileImage.onerror = function() {
+    this.src = "https://via.placeholder.com/150";
+};
+
 fetch(BASE_URL + "get_profile?email=" + email)
 .then(res => res.json())
 .then(data => {

@@ -43,6 +43,13 @@
             align-items: center;
             gap: 16px;
             margin-bottom: 24px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .profile-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .profile-avatar {
@@ -308,11 +315,14 @@
         <h1 class="header-main">Management & Support</h1>
 
         <!-- Profile Card -->
-        <div class="profile-card">
+        <div class="profile-card" onclick="window.location.href='doctor_profile.html'">
             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23EBE4D8'/%3E%3Ctext x='50' y='55' font-size='40' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%232D1E16'%3E%26%23128100%3B%3C/text%3E%3C/svg%3E" alt="Profile" class="profile-avatar" id="profileImage">
             <div class="profile-info">
                 <h2 class="profile-name" id="profileName">Doctor</h2>
                 <div class="profile-email" id="profileEmail">email@clinic.com</div>
+                <div style="font-size: 11px; color: #8C5C3D; margin-top: 4px; font-weight: bold;">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+                </div>
             </div>
         </div>
 
@@ -395,13 +405,18 @@
         function fetchDoctorProfile() {
             if (typeof BASE_URL === 'undefined') return;
 
+            const profileImgElement = document.getElementById('profileImage');
+            profileImgElement.onerror = function() {
+                this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23EBE4D8'/%3E%3Ctext x='50' y='55' font-size='40' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%232D1E16'%3E%26%23128100%3B%3C/text%3E%3C/svg%3E";
+            };
+
             fetch(BASE_URL + "get_doctor_profile?email=" + encodeURIComponent(doctorEmail))
             .then(res => res.json())
             .then(data => {
                 if (data && data.username) {
                     document.getElementById('profileName').innerText = data.username;
                     if (data.profile_image) {
-                        document.getElementById('profileImage').src = data.profile_image;
+                        profileImgElement.src = data.profile_image;
                     }
                 }
             })

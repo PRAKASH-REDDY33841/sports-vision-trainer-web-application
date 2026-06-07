@@ -101,6 +101,18 @@
             padding-left: 12px;
         }
 
+        .match-icon {
+            position: absolute;
+            right: 16px;
+            display: none;
+        }
+
+        /* Hide Microsoft Edge native password reveal button */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none;
+        }
+
         .error-msg {
             color: #ff4d4f;
             font-size: 12px;
@@ -209,6 +221,9 @@
             <label class="input-label">CONFIRM PASSWORD</label>
             <div class="input-wrapper" id="confirmWrapper">
                 <input type="password" id="confirm" placeholder="••••••••">
+                <span class="match-icon" id="matchIcon">
+                    <i class="fa-solid fa-check" style="color: #4CAF50;"></i>
+                </span>
             </div>
             <div class="error-msg" id="confirmError"></div>
         </div>
@@ -284,11 +299,40 @@
             return emailRegex.test(value);
         }
 
+        const matchIcon = document.getElementById("matchIcon");
+
+        function checkPasswordMatch() {
+            const pass = inputs.password.value;
+            const conf = inputs.confirm.value;
+
+            if (conf === "") {
+                matchIcon.style.display = "none";
+                errors.confirm.innerText = "";
+                wrappers.confirm.classList.remove("error");
+                return;
+            }
+
+            if (pass === conf) {
+                matchIcon.style.display = "block";
+                errors.confirm.innerText = "";
+                wrappers.confirm.classList.remove("error");
+            } else {
+                matchIcon.style.display = "none";
+                errors.confirm.innerText = "Passwords do not match";
+                wrappers.confirm.classList.add("error");
+            }
+        }
+
+        inputs.confirm.addEventListener("input", checkPasswordMatch);
+        inputs.password.addEventListener("input", checkPasswordMatch);
+
         Object.values(inputs).forEach(input => {
             input.addEventListener("input", () => {
                 const key = Object.keys(inputs).find(k => inputs[k] === input);
-                errors[key].innerText = "";
-                wrappers[key].classList.remove("error");
+                if (key !== "confirm" && key !== "password") {
+                    errors[key].innerText = "";
+                    wrappers[key].classList.remove("error");
+                }
                 authError.innerText = "";
             });
             input.addEventListener("blur", () => {
