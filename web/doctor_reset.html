@@ -331,7 +331,7 @@
                         window.location.href = "doctor_login.html";
                     }, 1500);
                 } else {
-                    authError.innerText = data.message || "Failed to reset password";
+                    authError.innerText = data.msg || data.message || "Failed to reset password";
                     submitBtn.innerText = "RESET PASSWORD";
                     submitBtn.style.opacity = "1";
                 }

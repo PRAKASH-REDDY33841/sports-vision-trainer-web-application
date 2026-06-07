@@ -236,7 +236,7 @@
                 if (data.status === "success") {
                     window.location.href = "doctor_reset.html";
                 } else {
-                    authError.innerText = data.message || "Invalid OTP";
+                    authError.innerText = data.msg || data.message || "Invalid OTP";
                     submitBtn.innerText = "VERIFY CODE";
                     submitBtn.style.opacity = "1";
                 }

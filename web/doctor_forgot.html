@@ -227,7 +227,7 @@
                     localStorage.setItem("resetEmail", email);
                     window.location.href = "doctor_verify.html";
                 } else {
-                    authError.innerText = data.message || "Failed to send OTP";
+                    authError.innerText = data.msg || data.message || "Failed to send OTP";
                     submitBtn.innerText = "CONTINUE";
                     submitBtn.style.opacity = "1";
                 }
