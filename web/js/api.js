@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8141/";
+const BASE_URL = "https://sports-vision-trainer-backend.onrender.com/";
 
 function login() {
 
@@ -15,24 +15,24 @@ function login() {
             password: password
         })
     })
-    .then(res => res.json())
-    .then(data => {
+        .then(res => res.json())
+        .then(data => {
 
-        if (data.status === "success") {
+            if (data.status === "success") {
 
-            localStorage.setItem("userEmail", email);
-            alert("Login successful");
-            window.location.href = "profile.html";
+                localStorage.setItem("userEmail", email);
+                alert("Login successful");
+                window.location.href = "profile.html";
 
-        } else {
-            alert(data.message || data.msg);
-        }
+            } else {
+                alert(data.message || data.msg);
+            }
 
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Error connecting to server");
-    });
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Error connecting to server");
+        });
 }
 
 function loadProfile() {
@@ -45,22 +45,22 @@ function loadProfile() {
     }
 
     fetch(BASE_URL + "get_profile?email=" + email)
-    .then(res => res.json())
-    .then(data => {
+        .then(res => res.json())
+        .then(data => {
 
-        document.getElementById("username").innerText = data.username || "No username";
-        document.getElementById("bio").innerText = data.bio || "No bio";
+            document.getElementById("username").innerText = data.username || "No username";
+            document.getElementById("bio").innerText = data.bio || "No bio";
 
-        if (data.profile_image) {
-            document.getElementById("profileImage").src = data.profile_image;
-            document.getElementById("profileImage").style.display = "block";
-        }
+            if (data.profile_image) {
+                document.getElementById("profileImage").src = data.profile_image;
+                document.getElementById("profileImage").style.display = "block";
+            }
 
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Failed to load profile");
-    });
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Failed to load profile");
+        });
 }
 
 function logout() {
@@ -116,21 +116,21 @@ function register() {
             password: password
         })
     })
-    .then(res => res.json())
-    .then(data => {
+        .then(res => res.json())
+        .then(data => {
 
-        if (data.status === "success") {
-            alert("Registered Successfully");
-            window.location.href = "login.html";
-        } else {
-            alert(data.message || data.msg);
-        }
+            if (data.status === "success") {
+                alert("Registered Successfully");
+                window.location.href = "login.html";
+            } else {
+                alert(data.message || data.msg);
+            }
 
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Server error");
-    });
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Server error");
+        });
 }
 
 function sendOtp() {
@@ -154,31 +154,31 @@ function sendOtp() {
         },
         body: JSON.stringify({ email: email })
     })
-    .then(res => res.json())
-    .then(data => {
+        .then(res => res.json())
+        .then(data => {
 
-        if (data.status === "success") {
+            if (data.status === "success") {
 
-            localStorage.setItem("resetEmail", email);
+                localStorage.setItem("resetEmail", email);
 
-            successBox.innerHTML =
-                `<div class="success-box">
+                successBox.innerHTML =
+                    `<div class="success-box">
                     <i class="fa-solid fa-circle-check"></i>
                     OTP sent successfully. Redirecting...
                 </div>`;
 
-            setTimeout(() => {
-                window.location.href = "verify.html";
-            }, 1500);
+                setTimeout(() => {
+                    window.location.href = "verify.html";
+                }, 1500);
 
-        } else {
-            errorBox.innerText = data.msg || "Something went wrong";
-        }
+            } else {
+                errorBox.innerText = data.msg || "Something went wrong";
+            }
 
-    })
-    .catch(err => {
-        errorBox.innerText = "Server error";
-    });
+        })
+        .catch(err => {
+            errorBox.innerText = "Server error";
+        });
 }
 
 function verifyOtp() {
@@ -211,29 +211,29 @@ function verifyOtp() {
             otp: otp
         })
     })
-    .then(res => res.json())
-    .then(data => {
+        .then(res => res.json())
+        .then(data => {
 
-        if (data.status === "success") {
+            if (data.status === "success") {
 
-            successBox.innerHTML =
-                `<div class="success-box">
+                successBox.innerHTML =
+                    `<div class="success-box">
                     <i class="fa-solid fa-circle-check"></i>
                     OTP Verified Successfully. Redirecting...
                 </div>`;
 
-            setTimeout(() => {
-                window.location.href = "reset.html";
-            }, 1500);
+                setTimeout(() => {
+                    window.location.href = "reset.html";
+                }, 1500);
 
-        } else {
-            errorBox.innerText = data.msg || "Invalid OTP";
-        }
+            } else {
+                errorBox.innerText = data.msg || "Invalid OTP";
+            }
 
-    })
-    .catch(() => {
-        errorBox.innerText = "Server error";
-    });
+        })
+        .catch(() => {
+            errorBox.innerText = "Server error";
+        });
 }
 function resetPassword() {
 
@@ -273,22 +273,22 @@ function resetPassword() {
             password: password
         })
     })
-    .then(res => res.json())
-    .then(data => {
+        .then(res => res.json())
+        .then(data => {
 
-        if (data.status === "success") {
-            alert("Password Reset Successful");
-            localStorage.removeItem("resetEmail");
-            window.location.href = "login.html";
-        } else {
-            alert(data.msg || data.message);
-        }
+            if (data.status === "success") {
+                alert("Password Reset Successful");
+                localStorage.removeItem("resetEmail");
+                window.location.href = "login.html";
+            } else {
+                alert(data.msg || data.message);
+            }
 
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Server error");
-    });
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Server error");
+        });
 }
 
 document.addEventListener("input", function () {
@@ -337,17 +337,17 @@ function saveSession(sessionData) {
             timestamp: sessionData.timestamp
         })
     })
-    .then(res => res.json())
-    .catch(err => console.error("Failed to save session to backend:", err));
+        .then(res => res.json())
+        .catch(err => console.error("Failed to save session to backend:", err));
 }
 
 function getSessions(email) {
     if (!email) return Promise.resolve({ sessions: [] });
     return fetch(BASE_URL + "get_sessions?email=" + email)
-    .then(res => res.json())
-    .catch(err => {
-        console.error("Failed to fetch sessions from backend:", err);
-        return { sessions: [] };
-    });
+        .then(res => res.json())
+        .catch(err => {
+            console.error("Failed to fetch sessions from backend:", err);
+            return { sessions: [] };
+        });
 }
 
